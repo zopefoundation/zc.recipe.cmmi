@@ -10,7 +10,6 @@ setup(
     license = "ZPL 2.1",
     keywords = "zope3",
     url='http://svn.zope.org/'+name,
-    download_url='http://download.zope.org/distribution',
 
     packages = find_packages(),
     include_package_data = True,
