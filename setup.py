@@ -7,6 +7,7 @@ setup(
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for defining a file-storage",
+    long_description = open('README.txt').read(),
     license = "ZPL 2.1",
     keywords = "zope3",
     url='http://svn.zope.org/'+name,
