@@ -14,7 +14,7 @@ class Recipe:
     def install(self):
         dest = self.options['dest']
         if os.path.exists(dest):
-            return # already there
+            return dest # already there
 
         url = self.options['url']
         f = urllib2.urlopen(url)
@@ -51,6 +51,7 @@ class Recipe:
         finally:
             shutil.rmtree(tmp)
 
+        return dest
 
 def tar(stream, path, mode='r|'):
     import tarfile
