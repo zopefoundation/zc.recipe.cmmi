@@ -8,11 +8,12 @@ class Recipe:
 
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
-        options['dest'] = os.path.join(buildout['buildout']['parts-directory'],
-                                       self.name)
+        options['prefix'] = os.path.join(
+            buildout['buildout']['parts-directory'],
+            name)
 
     def install(self):
-        dest = self.options['dest']
+        dest = self.options['prefix']
         if os.path.exists(dest):
             return dest # already there
 
