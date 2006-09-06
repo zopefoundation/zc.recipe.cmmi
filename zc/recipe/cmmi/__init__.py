@@ -34,18 +34,20 @@ class Recipe:
             here = os.getcwd()
             try:
                 os.chdir(tmp)
-                if not os.path.exists('configure'):
-                    entries = os.listdir(tmp)
-                    if len(entries) == 1:
-                        os.chdir(entries[0])
-                    else:
-                        raise ValueError("Couldn't find configure")
-                    
-                system("./configure --prefix="+dest)
-                system("make")
-                system("make install")
+                try:
+                    if not os.path.exists('configure'):
+                        entries = os.listdir(tmp)
+                        if len(entries) == 1:
+                            os.chdir(entries[0])
+                        else:
+                            raise ValueError("Couldn't find configure")
+
+                    system("./configure --prefix="+dest)
+                    system("make")
+                    system("make install")
+                finally:
+                    os.chdir(here)
             except:
-                os.chdir(here)
                 os.rmdir(dest)
                 raise
 
