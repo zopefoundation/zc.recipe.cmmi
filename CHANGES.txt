@@ -1,0 +1,14 @@
+======================
+zc.recipe.cmmi changes
+======================
+
+unreleased
+==========
+
+Features added
+--------------
+
+Added an 'extra_options' buildout option to pass extra configure
+options to the configure step. This is useful when compiling a library
+that expects another library to be installed in another part already,
+such as libxslt which expects libxml2.

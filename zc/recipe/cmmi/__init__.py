@@ -14,6 +14,8 @@ class Recipe:
 
     def install(self):
         dest = self.options['prefix']
+        extra_options = self.options.get('extra_options', '')
+        
         if os.path.exists(dest):
             return dest # already there
 
@@ -42,7 +44,8 @@ class Recipe:
                         else:
                             raise ValueError("Couldn't find configure")
 
-                    system("./configure --prefix="+dest)
+                    system("./configure --prefix=%s %s" %
+                           (dest, extra_options))
                     system("make")
                     system("make install")
                 finally:
