@@ -15,6 +15,9 @@ class Recipe:
     def install(self):
         dest = self.options['prefix']
         extra_options = self.options.get('extra_options', '')
+        # get rid of any newlines that may be in the options so they
+        # do not get passed through to the commandline
+        extra_options = ' '.join(extra_options.split())
         
         if os.path.exists(dest):
             return dest # already there
