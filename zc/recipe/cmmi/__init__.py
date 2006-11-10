@@ -8,7 +8,7 @@ class Recipe:
 
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
-        options['prefix'] = os.path.join(
+        options['location'] = options['prefix'] = os.path.join(
             buildout['buildout']['parts-directory'],
             name)
 
