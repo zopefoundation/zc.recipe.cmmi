@@ -62,6 +62,9 @@ class Recipe:
 
         return dest
 
+    def update(self):
+        pass
+
 def tar(stream, path, mode='r|'):
     import tarfile
     t = tarfile.open(mode=mode, fileobj=stream)
