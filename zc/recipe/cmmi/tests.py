@@ -16,8 +16,9 @@ import os, re, StringIO, sys, tarfile
 import zc.buildout.testing
 
 import unittest
+import doctest
 import zope.testing
-from zope.testing import doctest, renormalizing
+from zope.testing import renormalizing
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
