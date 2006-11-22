@@ -1,14 +1,15 @@
-======================
-zc.recipe.cmmi changes
-======================
+Release History
+***************
 
-unreleased
-==========
+1.0.1 (2006-11-22)
+==================
 
-Features added
---------------
+Bugs Fixed
+----------
 
-Added an 'extra_options' buildout option to pass extra configure
-options to the configure step. This is useful when compiling a library
-that expects another library to be installed in another part already,
-such as libxslt which expects libxml2.
+Added missing zip_safe flag.
+
+1.0 (2006-11-22)
+================
+
+Initial release.

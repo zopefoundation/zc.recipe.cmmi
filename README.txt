@@ -1,7 +1,8 @@
+************************************************************
 Recipe installing a download via configure/make/make install
-============================================================
+************************************************************
 
-This recipe currently has a single option:
+The configure-make-make-install recipe automates installation of
+configure-based source distribution into buildouts.
 
-url 
-  The URL to download the source from.
+.. contents::

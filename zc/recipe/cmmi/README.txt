@@ -1,8 +1,4 @@
-The configure-make-make-install recipe automates installation of
-traditional configure-based source distribution into buildouts.
-
-The only option is the url option which gives the location of a source
-archive.   We have an archive with a demo foo tar ball:
+We have an archive with a demo foo tar ball:
 
     >>> ls(distros)
     -  foo.tgz
@@ -19,7 +15,7 @@ Let's update a sample buildout to installs it:
     ... url = file://%s/foo.tgz
     ... """ % distros)
 
-We used the URL option to specify the location of the archive.
+We used the url option to specify the location of the archive.
 
 If we run the buildout, the configure script in the archive is run.
 It creates a make file which is also run:
