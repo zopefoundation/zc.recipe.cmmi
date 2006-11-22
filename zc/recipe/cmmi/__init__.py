@@ -1,4 +1,19 @@
+##############################################################################
+#
+# Copyright (c) 2006 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
 import logging, os, shutil, tempfile, urllib2, urlparse
+import setuptools.archive_util
 
 def system(c):
     if os.system(c):
@@ -13,28 +28,21 @@ class Recipe:
             name)
 
     def install(self):
-        dest = self.options['prefix']
+        dest = self.options['location']
         extra_options = self.options.get('extra_options', '')
         # get rid of any newlines that may be in the options so they
         # do not get passed through to the commandline
         extra_options = ' '.join(extra_options.split())
-        
-        if os.path.exists(dest):
-            return dest # already there
 
         url = self.options['url']
-        f = urllib2.urlopen(url)
         _, _, urlpath, _, _, _ = urlparse.urlparse(url)
         tmp = tempfile.mkdtemp('buildout-'+self.name)
+        tmp2 = tempfile.mkdtemp('buildout-'+self.name)
         try:
-            for suffix, handler in extractors.items():
-                if urlpath.endswith(suffix):
-                    handler(f, tmp)
-                    break
-            else:
-                raise ValueError("Don't know how to expand", urlpath)
+            fname = os.path.join(tmp2, urlpath.split('/')[-1])
+            open(fname, 'w').write(urllib2.urlopen(url).read())
+            setuptools.archive_util.unpack_archive(fname, tmp)
             
-
             os.mkdir(dest)
             here = os.getcwd()
             try:
@@ -59,34 +67,11 @@ class Recipe:
 
         finally:
             shutil.rmtree(tmp)
+            shutil.rmtree(tmp2)
 
         return dest
 
     def update(self):
         pass
-
-def tar(stream, path, mode='r|'):
-    import tarfile
-    t = tarfile.open(mode=mode, fileobj=stream)
-    while 1:
-        info = t.next()
-        if info is None:
-            t.close()
-            return
-        t.extract(info, path)
-    
-def tgz(stream, path):
-    return tar(stream, path, 'r|gz')
-    
-def tbz(stream, path):
-    return tar(stream, path, 'r|bz2')
-        
-extractors = {
-    '.tar': tar,
-    '.tgz': tgz,
-    '.tar.gz': tgz,
-    '.tar.bz2': tbz,
-    #'.zip': zip,
-    }
 
                 
