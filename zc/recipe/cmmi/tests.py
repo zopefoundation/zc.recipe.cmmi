@@ -64,9 +64,8 @@ def test_suite():
             checker=renormalizing.RENormalizing([
                 (re.compile('--prefix=\S+sample-buildout'),
                  '--prefix=/sample_buildout'),
-#               zc.buildout.testing.normalize_path,
-#               zc.buildout.testing.normalize_script,
-#               zc.buildout.testing.normalize_egg_py,        
+                (re.compile(' = \S+sample-buildout'),
+                 ' = /sample_buildout'),
                ])
             ),
         
