@@ -31,7 +31,6 @@ def setUp(test):
     info.size = len(configure)
     info.mode = 0755
     tar.addfile(info, StringIO.StringIO(configure))
-    
 
 def add(tar, name, src, mode=None):
     info.size = len(src)
@@ -53,8 +52,7 @@ install:
 
 open('Makefile', 'w').write(Makefile_template)
 
-"""
-    
+"""    
 
 def test_suite():
     return unittest.TestSuite((

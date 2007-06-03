@@ -33,6 +33,8 @@ class Recipe:
         # get rid of any newlines that may be in the options so they
         # do not get passed through to the commandline
         extra_options = ' '.join(extra_options.split())
+        patch = self.options.get('patch', '')
+        patch_options = self.options.get('patch_options', '-p0')
 
         url = self.options['url']
         _, _, urlpath, _, _, _ = urlparse.urlparse(url)
@@ -47,6 +49,12 @@ class Recipe:
             here = os.getcwd()
             try:
                 os.chdir(tmp)
+                if patch is not '':
+                    try:
+                        system("patch %s < %s" % (patch_options, patch))                    
+                    finally:
+                        os.chdir(tmp)
+                                        
                 try:
                     if not os.path.exists('configure'):
                         entries = os.listdir(tmp)
