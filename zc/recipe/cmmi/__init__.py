@@ -48,13 +48,7 @@ class Recipe:
             os.mkdir(dest)
             here = os.getcwd()
             try:
-                os.chdir(tmp)
-                if patch is not '':
-                    try:
-                        system("patch %s < %s" % (patch_options, patch))                    
-                    finally:
-                        os.chdir(tmp)
-                                        
+                os.chdir(tmp)                                        
                 try:
                     if not os.path.exists('configure'):
                         entries = os.listdir(tmp)
@@ -62,7 +56,8 @@ class Recipe:
                             os.chdir(entries[0])
                         else:
                             raise ValueError("Couldn't find configure")
-
+                    if patch is not '':
+                        system("patch %s < %s" % (patch_options, patch))
                     system("./configure --prefix=%s %s" %
                            (dest, extra_options))
                     system("make")
