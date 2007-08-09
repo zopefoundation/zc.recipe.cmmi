@@ -1,6 +1,21 @@
 Release History
 ***************
 
+1.1.0
+=====
+
+Added support for:
+
+ - download-cache: downloaded files are cached in the 'cmmi' subdirectory of
+   the cache cache keys are hashes of the url that the file was downloaded from
+   cache information recorded in the cache.ini file within each directory
+
+ - offline mode: cmmi will not go online if the package is not in the cache
+
+ - variable location: build files other than in the parts directory if required
+
+ - additional logging/output
+
 1.0.2 (2007-06-03)
 ==================
 

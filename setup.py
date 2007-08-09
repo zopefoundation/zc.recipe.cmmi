@@ -21,7 +21,7 @@ def read(*rnames):
 name = "zc.recipe.cmmi"
 setup(
     name = name,
-    version = "1.0.2",
+    version = "1.1.0",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for configure/make/make install",
@@ -37,6 +37,11 @@ setup(
         '**********************\n'
         + '\n' +
         read('zc', 'recipe', 'cmmi', 'README.txt')
+        + '\n' +
+        'Download Cache\n'
+        '**************\n'
+        'The recipe supports use of a download cache in the same way\n'
+        'as zc.buildout. See downloadcache.txt for details\n'
         + '\n' +
         'Download\n'
         '**********************\n'
