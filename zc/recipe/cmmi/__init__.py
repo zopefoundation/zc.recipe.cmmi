@@ -68,8 +68,7 @@ class Recipe:
         setuptools.archive_util.unpack_archive(fname, tmp)
           
         here = os.getcwd()
-        if not os.path.exists(dest):
-            os.mkdir(dest)
+        os.mkdir(dest)
 
         try:
             os.chdir(tmp)                                        
