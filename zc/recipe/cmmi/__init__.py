@@ -16,6 +16,7 @@ import logging, os, shutil, tempfile, urllib2, urlparse
 import setuptools.archive_util
 import datetime
 import sha
+import shutil
 import zc.buildout
 
 def system(c):
@@ -48,6 +49,7 @@ class Recipe:
         options['prefix'] = options['location']
 
     def install(self):
+        logger = logging.getLogger(self.name)
         dest = self.options['location']
         url = self.options['url']
         extra_options = self.options.get('extra_options', '')
@@ -62,7 +64,7 @@ class Recipe:
  
         # now unpack and work as normal
         tmp = tempfile.mkdtemp('buildout-'+self.name)
-        logging.getLogger(self.name).info('Unpacking and configuring')
+        logger.info('Unpacking and configuring')
         setuptools.archive_util.unpack_archive(fname, tmp)
           
         here = os.getcwd()
@@ -86,7 +88,7 @@ class Recipe:
             finally:
                 os.chdir(here)
         except:
-            os.rmdir(dest)
+            shutil.rmtree(dest)
             raise
 
         return dest
