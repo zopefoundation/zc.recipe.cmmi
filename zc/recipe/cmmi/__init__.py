@@ -71,7 +71,7 @@ class Recipe:
         os.mkdir(dest)
 
         try:
-            os.chdir(tmp)                                        
+            os.chdir(tmp)
             try:
                 if not os.path.exists('configure'):
                     entries = os.listdir(tmp)
@@ -80,6 +80,14 @@ class Recipe:
                     else:
                         raise ValueError("Couldn't find configure")
                 if patch is not '':
+                    # patch may be a filesystem path or url
+                    # url patches can go through the cache
+                    if urlparse.urlparse( patch, None)[0] is not None:
+                        patch = getFromCache( patch
+                                            , self.name
+                                            , self.download_cache
+                                            , self.install_from_cache
+                                            )
                     system("patch %s < %s" % (patch_options, patch))
                 system("./configure --prefix=%s %s" %
                        (dest, extra_options))
