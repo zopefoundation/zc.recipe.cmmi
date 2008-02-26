@@ -7,6 +7,11 @@ After 1.1.0
 Added support for patches to be downloaded from a url rather than only using
 patches on the filesystem
 
+Bugs Fixed
+----------
+
+Check if the `location` folder exists before creating it.
+
 1.1.0
 =====
 

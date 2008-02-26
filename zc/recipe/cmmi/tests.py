@@ -100,5 +100,20 @@ def test_suite():
                ]),
             optionflags = doctest.ELLIPSIS
             ),
+        
+        doctest.DocFileSuite(
+            'misc.txt',
+            setUp=setUp,
+            tearDown=zc.buildout.testing.buildoutTearDown,
+
+            checker=renormalizing.RENormalizing([
+               zc.buildout.testing.normalize_path,
+               zc.buildout.testing.normalize_script,
+               zc.buildout.testing.normalize_egg_py,
+               normalize_bang,
+               (re.compile('extdemo[.]pyd'), 'extdemo.so')
+               ]),
+            optionflags = doctest.ELLIPSIS
+            ),
 
         ))
