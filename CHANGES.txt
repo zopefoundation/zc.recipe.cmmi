@@ -1,16 +1,19 @@
 Release History
 ***************
 
-After 1.1.0
-===========
-
-Added support for patches to be downloaded from a url rather than only using
-patches on the filesystem
+1.1.2 (2008-02-28)
+==================
 
 Bugs Fixed
 ----------
 
 Check if the `location` folder exists before creating it.
+
+After 1.1.0
+===========
+
+Added support for patches to be downloaded from a url rather than only using
+patches on the filesystem
 
 1.1.0
 =====
