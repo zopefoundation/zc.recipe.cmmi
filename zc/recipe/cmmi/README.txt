@@ -81,6 +81,34 @@ recipes, to the location where the part is installed:
     location = /sample-buildout/parts/foo
     ...
 
+It may be necessary to set some environment variables when running configure
+or make. This can be done by adding an environment statement:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = file://%s/foo.tgz
+    ... environment =
+    ...   CFLAGS=-I/usr/lib/postgresql7.4/include
+    ... """ % distros)
+
+
+    >>> print system('bin/buildout'),
+    Uninstalling foo.
+    Installing foo.
+    foo: Downloading .../distros/foo.tgz
+    foo: Unpacking and configuring
+    foo: Updating environment: CFLAGS=-I/usr/lib/postgresql7.4/include
+    configuring foo --prefix=/sample_buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+
 Sometimes it's necessary to patch the sources before building a package.
 You can specify the name of the patch to apply and (optional) patch options:
 

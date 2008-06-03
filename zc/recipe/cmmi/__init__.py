@@ -71,6 +71,13 @@ class Recipe:
         if not os.path.exists(dest):
             os.mkdir(dest)
 
+        environ = self.options.get('environment', '').split()
+        if environ:
+            for entry in environ:
+                logger.info('Updating environment: %s' % entry)
+            environ = dict([x.split('=', 1) for x in environ])
+            os.environ.update(environ)
+
         try:
             os.chdir(tmp)
             try:
