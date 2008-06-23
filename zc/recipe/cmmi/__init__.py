@@ -42,7 +42,7 @@ class Recipe:
         # we assume that install_from_cache and download_cache values
         # are correctly set, and that the download_cache directory has
         # been created: this is done by the main zc.buildout anyway
-          
+
         location = options.get(
             'location', buildout['buildout']['parts-directory'])
         options['location'] = os.path.join(location, name)
@@ -56,17 +56,20 @@ class Recipe:
         # get rid of any newlines that may be in the options so they
         # do not get passed through to the commandline
         extra_options = ' '.join(extra_options.split())
+
+        autogen = self.options.get('autogen', '')
+
         patch = self.options.get('patch', '')
         patch_options = self.options.get('patch_options', '-p0')
 
         fname = getFromCache(
             url, self.name, self.download_cache, self.install_from_cache)
- 
+
         # now unpack and work as normal
         tmp = tempfile.mkdtemp('buildout-'+self.name)
         logger.info('Unpacking and configuring')
         setuptools.archive_util.unpack_archive(fname, tmp)
-          
+
         here = os.getcwd()
         if not os.path.exists(dest):
             os.mkdir(dest)
@@ -81,12 +84,11 @@ class Recipe:
         try:
             os.chdir(tmp)
             try:
-                if not os.path.exists('configure'):
+                if not (os.path.exists('configure') or
+                        os.path.exists(autogen)):
                     entries = os.listdir(tmp)
                     if len(entries) == 1:
                         os.chdir(entries[0])
-                    else:
-                        raise ValueError("Couldn't find configure")
                 if patch is not '':
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
@@ -97,6 +99,15 @@ class Recipe:
                                             , self.install_from_cache
                                             )
                     system("patch %s < %s" % (patch_options, patch))
+                if autogen is not '':
+                    logger.info('auto generating configure files')
+                    system("%s" % autogen)
+                if not os.path.exists('configure'):
+                    entries = os.listdir(tmp)
+                    if len(entries) == 1:
+                        os.chdir(entries[0])
+                    else:
+                        raise ValueError("Couldn't find configure")
                 system("./configure --prefix=%s %s" %
                        (dest, extra_options))
                 system("make")

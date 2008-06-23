@@ -17,6 +17,7 @@ In this example, we'll create a directory to hold the cache:
 We have an archive with a demo foo tar ball:
 
     >>> ls(distros)
+    -  bar.tgz
     -  foo.tgz
 
 Let's update a sample buildout to install it:

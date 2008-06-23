@@ -1,6 +1,7 @@
 We have an archive with a demo foo tar ball:
 
     >>> ls(distros)
+    -  bar.tgz
     -  foo.tgz
 
 Let's update a sample buildout to installs it:
@@ -75,10 +76,10 @@ recipes, to the location where the part is installed:
     parts = foo
     <BLANKLINE>
     [foo]
-    __buildout_installed__ = /sample-buildout/parts/foo
+    __buildout_installed__ = /sample_buildout/parts/foo
     ...
     extra_options = -a -b c
-    location = /sample-buildout/parts/foo
+    location = /sample_buildout/parts/foo
     ...
 
 It may be necessary to set some environment variables when running configure
@@ -116,7 +117,7 @@ First of all let's write a patchfile:
 
     >>> import sys
     >>> mkdir('patches')
-    >>> write('patches/config.patch', 
+    >>> write('patches/config.patch',
     ... """--- configure
     ... +++ /dev/null
     ... @@ -1,13 +1,13 @@
@@ -124,22 +125,22 @@ First of all let's write a patchfile:
     ...  import sys
     ... -print "configuring foo", ' '.join(sys.argv[1:])
     ... +print "configuring foo patched", ' '.join(sys.argv[1:])
-    ...  
+    ...
     ...  Makefile_template = '''
     ...  all:
     ... -\techo building foo
     ... +\techo building foo patched
-    ...  
+    ...
     ...  install:
     ... -\techo installing foo
     ... +\techo installing foo patched
     ...  '''
-    ...  
+    ...
     ...  open('Makefile', 'w').write(Makefile_template)
-    ... 
+    ...
     ... """ % sys.executable)
 
-Now let's create a buildout.cfg file. Note: If no patch option is beeing 
+Now let's create a buildout.cfg file. Note: If no patch option is beeing
 passed, -p0 is appended by default.
 
     >>> write('buildout.cfg',
@@ -165,4 +166,28 @@ passed, -p0 is appended by default.
     building foo patched
     echo installing foo patched
     installing foo patched
-    
+
+It is possible to autogenerate the configure files:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = file://%s/bar.tgz
+    ... autogen = autogen.sh
+    ... """ % distros)
+
+    >>> print system('bin/buildout'),
+    Uninstalling foo.
+    Installing foo.
+    foo: Downloading .../distros/bar.tgz
+    foo: Unpacking and configuring
+    foo: auto generating configure files
+    configuring foo --prefix=/sample_buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo

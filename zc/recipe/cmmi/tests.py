@@ -34,6 +34,19 @@ def setUp(test):
     info.mode = 0755
     tar.addfile(info, StringIO.StringIO(configure))
 
+    tarpath = os.path.join(distros, 'bar.tgz')
+    tar = tarfile.open(tarpath, 'w:gz')
+    configure = configure_template % sys.executable
+    info = tarfile.TarInfo('configure.in')
+    info.size = len(configure)
+    info.mode = 0755
+    tar.addfile(info, StringIO.StringIO(configure))
+    autogen = autogen_template
+    info = tarfile.TarInfo('autogen.sh')
+    info.size = len(autogen)
+    info.mode = 0755
+    tar.addfile(info, StringIO.StringIO(autogen))
+
 def add(tar, name, src, mode=None):
     info.size = len(src)
     if mode is not None:
@@ -54,7 +67,12 @@ install:
 
 open('Makefile', 'w').write(Makefile_template)
 
-"""    
+"""
+
+autogen_template = """#!/bin/sh
+mv configure.in configure
+"""
+
 
 def test_suite():
     return unittest.TestSuite((
@@ -70,7 +88,7 @@ def test_suite():
                ]),
             optionflags = doctest.ELLIPSIS
             ),
-        
+
         doctest.DocFileSuite(
             'patching.txt',
             setUp=setUp,
@@ -100,7 +118,7 @@ def test_suite():
                ]),
             optionflags = doctest.ELLIPSIS
             ),
-        
+
         doctest.DocFileSuite(
             'misc.txt',
             setUp=setUp,
