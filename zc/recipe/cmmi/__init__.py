@@ -101,7 +101,7 @@ class Recipe:
                     system("patch %s < %s" % (patch_options, patch))
                 if autogen is not '':
                     logger.info('auto generating configure files')
-                    system("%s" % autogen)
+                    system("./%s" % autogen)
                 if not os.path.exists('configure'):
                     entries = os.listdir(tmp)
                     if len(entries) == 1:
