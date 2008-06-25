@@ -2,7 +2,7 @@ Release History
 ***************
 
 
-1.1.4 (unreleased)
+1.1.4 (2008-06-25)
 ==================
 
 Add support to autogen configure files.
