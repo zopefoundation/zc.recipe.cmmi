@@ -178,7 +178,7 @@ def getFromCache(url, name, download_cache=None, install_from_cache=False):
                 tmp2 = tempfile.mkdtemp('buildout-' + name)
                 fname = os.path.join(tmp2, filename)
                 logging.getLogger(name).info('Downloading %s' % url)
-            open(fname, 'w').write(urllib2.urlopen(url).read())
+            open(fname, 'wb').write(urllib2.urlopen(url).read())
         except:
             if tmp2 is not None:
                shutil.rmtree(tmp2)

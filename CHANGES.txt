@@ -1,6 +1,21 @@
 Release History
 ***************
 
+Yet-to-Release (2008-??-??)
+===========================
+
+Added to the README.txt file a link to the SVN repository, so that Setuptools
+can automatically find the development version when asked to install the
+"-dev" version of zc.recipe.cmmi.
+
+Bugs Fixed
+----------
+
+Applied fix for bug #261367 i.e. changed open() of file being downloaded to
+binary, so that errors like the following no longer occur under Windows.
+
+  uncompress = self.decompress.decompress(buf)
+  error: Error -3 while decompressing: invalid distance too far back
 
 1.1.4 (2008-06-25)
 ==================
