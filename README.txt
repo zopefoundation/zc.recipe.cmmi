@@ -10,4 +10,4 @@ configure-based source distribution into buildouts.
 
 SVN version:
 
-  <http://svn.zope.org/repos/main/zc.recipe.cmmi/trunk#egg=zc.recipe.cmmi-dev>
+  <http://svn.zope.org/zc.recipe.cmmi/trunk#egg=zc.recipe.cmmi-dev>
