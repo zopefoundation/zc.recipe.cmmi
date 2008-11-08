@@ -1,8 +1,8 @@
 Release History
 ***************
 
-Yet-to-Release (2008-??-??)
-===========================
+1.1.5 (2008-11-07)
+==================
 
 Added to the README.txt file a link to the SVN repository, so that Setuptools
 can automatically find the development version when asked to install the
