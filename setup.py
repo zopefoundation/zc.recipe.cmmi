@@ -36,7 +36,7 @@ setup(
         'Detailed Documentation\n'
         '**********************\n'
         + '\n' +
-        read('zc', 'recipe', 'cmmi', 'README.txt')
+        read('src', 'zc', 'recipe', 'cmmi', 'README.txt')
         + '\n' +
         'Download Cache\n'
         '**************\n'
@@ -47,7 +47,8 @@ setup(
         '**********************\n'
         ),
 
-    packages = find_packages(),
+    package_dir = {'':'src'},
+    packages = find_packages('src'),
     include_package_data = True,
     data_files = [('.', ['README.txt'])],
     namespace_packages = ['zc', 'zc.recipe'],
