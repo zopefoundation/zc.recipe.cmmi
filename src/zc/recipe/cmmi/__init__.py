@@ -15,7 +15,10 @@
 import logging, os, shutil, tempfile, urllib2, urlparse
 import setuptools.archive_util
 import datetime
-import sha
+try:
+    from hashlib import sha1
+except ImportError: # Python < 2.5
+    from sha import new as sha1
 import shutil
 import zc.buildout
 
@@ -125,7 +128,7 @@ class Recipe:
 
 def getFromCache(url, name, download_cache=None, install_from_cache=False):
     if download_cache:
-        cache_fname = sha.new(url).hexdigest()
+        cache_fname = sha1(url).hexdigest()
         cache_name = os.path.join(download_cache, cache_fname)
         if not os.path.isdir(download_cache):
             os.mkdir(download_cache)
