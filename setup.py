@@ -27,6 +27,7 @@ setup(
     description = "ZC Buildout recipe for configure/make/make install",
     license = "ZPL 2.1",
     keywords = "zope3",
+    classifiers = ["Framework :: Buildout"],
     url='http://www.python.org/pypi/'+name,
     long_description=(
         read('README.txt')
