@@ -1,6 +1,14 @@
 Release History
 ***************
 
+1.1.6 (2009-03-17)
+==================
+
+Moved 'zc' package from root of checkout into 'src', to prevent testrunner
+from finding eggs installed locally by buildout.
+
+Removed deprecations under Python 2.6.
+
 1.1.5 (2008-11-07)
 ==================
 
