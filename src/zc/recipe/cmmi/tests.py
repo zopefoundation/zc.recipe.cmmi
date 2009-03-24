@@ -89,9 +89,10 @@ def test_suite():
             ),
 
         doctest.DocFileSuite(
-            'patching.txt',
             'downloadcache.txt',
             'misc.txt',
+            'patching.txt',
+            'shared.txt',
             setUp=setUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
 
@@ -102,6 +103,6 @@ def test_suite():
                normalize_bang,
                (re.compile('extdemo[.]pyd'), 'extdemo.so')
                ]),
-            optionflags = doctest.ELLIPSIS
+            optionflags = doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
             ),
         ))

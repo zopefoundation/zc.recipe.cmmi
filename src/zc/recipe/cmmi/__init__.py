@@ -41,70 +41,107 @@ class Recipe:
             # download details stored with each key as cache.ini
             self.download_cache = os.path.join(
                 directory, self.download_cache, 'cmmi')
-
-        # we assume that install_from_cache and download_cache values
-        # are correctly set, and that the download_cache directory has
-        # been created: this is done by the main zc.buildout anyway
+            if not os.path.isdir(self.download_cache):
+                os.mkdir(self.download_cache)
 
         location = options.get(
             'location', buildout['buildout']['parts-directory'])
         options['location'] = os.path.join(location, name)
-        options['prefix'] = options['location']
 
-    def install(self):
-        logger = logging.getLogger(self.name)
-        dest = self.options['location']
-        url = self.options['url']
+        self.url = self.options['url']
         extra_options = self.options.get('extra_options', '')
         # get rid of any newlines that may be in the options so they
         # do not get passed through to the commandline
-        extra_options = ' '.join(extra_options.split())
+        self.extra_options = ' '.join(extra_options.split())
 
-        autogen = self.options.get('autogen', '')
+        self.autogen = self.options.get('autogen', '')
 
-        patch = self.options.get('patch', '')
-        patch_options = self.options.get('patch_options', '-p0')
+        self.patch = self.options.get('patch', '')
+        self.patch_options = self.options.get('patch_options', '-p0')
+
+        self.environ = self.options.get('environment', '').split()
+        if self.environ:
+            self.environ = dict([x.split('=', 1) for x in self.environ])
+        else:
+            self.environ = {}
+
+        self.shared = options.get('shared', None)
+        if self.shared:
+            if os.path.isdir(self.shared):
+                # to prevent nasty surprises, don't use the directory directly
+                # since we remove it in case of build errors
+                self.shared = os.path.join(self.shared, 'cmmi')
+            else:
+                if not self.download_cache:
+                    raise ValueError(
+                        "Set the 'shared' option of zc.recipe.cmmi to an existing"
+                        " directory, or set ${buildout:download-cache}")
+
+                self.shared = os.path.join(
+                    directory, self.download_cache, 'build')
+                if not os.path.isdir(self.shared):
+                    os.mkdir(self.shared)
+                self.shared = os.path.join(self.shared, self._state_hash())
+
+            options['location'] = self.shared
+
+    def _state_hash(self):
+        # hash of our configuration state, so that e.g. different
+        # ./configure options will get a different build directory
+        env = ''.join(['%s%s' % (key, value) for key, value
+                       in self.environ.items()])
+        state = [self.url, self.extra_options, self.autogen,
+                 self.patch, self.patch_options, env]
+        return sha1(''.join(state)).hexdigest()
+
+    def install(self):
+        logger = logging.getLogger(self.name)
+
+        if self.shared:
+            if os.path.isdir(self.shared):
+                logger.info('using existing shared build')
+                return ()
+            else:
+                os.mkdir(self.shared)
+
+        dest = self.options['location']
+        here = os.getcwd()
+        if not os.path.exists(dest):
+            os.mkdir(dest)
 
         fname = getFromCache(
-            url, self.name, self.download_cache, self.install_from_cache)
+            self.url, self.name, self.download_cache, self.install_from_cache)
 
         # now unpack and work as normal
         tmp = tempfile.mkdtemp('buildout-'+self.name)
         logger.info('Unpacking and configuring')
         setuptools.archive_util.unpack_archive(fname, tmp)
 
-        here = os.getcwd()
-        if not os.path.exists(dest):
-            os.mkdir(dest)
-
-        environ = self.options.get('environment', '').split()
-        if environ:
-            for entry in environ:
-                logger.info('Updating environment: %s' % entry)
-            environ = dict([x.split('=', 1) for x in environ])
-            os.environ.update(environ)
+        for key, value in self.environ.items():
+            logger.info('Updating environment: %s=%s' % (key, value))
+        os.environ.update(self.environ)
 
         try:
             os.chdir(tmp)
             try:
                 if not (os.path.exists('configure') or
-                        os.path.exists(autogen)):
+                        os.path.exists(self.autogen)):
                     entries = os.listdir(tmp)
                     if len(entries) == 1:
                         os.chdir(entries[0])
-                if patch is not '':
+                if self.patch is not '':
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
-                    if urlparse.urlparse( patch, None)[0] is not None:
-                        patch = getFromCache( patch
+                    if urlparse.urlparse(self.patch, None)[0] is not None:
+                        self.patch = getFromCache( self.patch
                                             , self.name
                                             , self.download_cache
                                             , self.install_from_cache
                                             )
-                    system("patch %s < %s" % (patch_options, patch))
-                if autogen is not '':
+                    system("patch %s < %s" % (self.patch_options, self.patch))
+                if self.autogen is not '':
                     logger.info('auto generating configure files')
-                    system("./%s" % autogen)
+                    system("./%s" % self.autogen)
                 if not os.path.exists('configure'):
                     entries = os.listdir(tmp)
                     if len(entries) == 1:
@@ -112,7 +149,7 @@ class Recipe:
                     else:
                         raise ValueError("Couldn't find configure")
                 system("./configure --prefix=%s %s" %
-                       (dest, extra_options))
+                       (dest, self.extra_options))
                 system("make")
                 system("make install")
             finally:
@@ -126,12 +163,11 @@ class Recipe:
     def update(self):
         pass
 
+
 def getFromCache(url, name, download_cache=None, install_from_cache=False):
     if download_cache:
         cache_fname = sha1(url).hexdigest()
         cache_name = os.path.join(download_cache, cache_fname)
-        if not os.path.isdir(download_cache):
-            os.mkdir(download_cache)
 
     _, _, urlpath, _, _ = urlparse.urlsplit(url)
     filename = urlpath.split('/')[-1]

@@ -1,6 +1,11 @@
 Release History
 ***************
 
+1.1.7 (unreleased)
+==================
+
+Enabled using a shared directory for completed builds.
+
 1.1.6 (2009-03-17)
 ==================
 
