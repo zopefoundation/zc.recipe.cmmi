@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,37 +12,32 @@
 #
 ##############################################################################
 
-import logging, os, shutil, tempfile, urllib2, urlparse
-import setuptools.archive_util
-import datetime
 try:
     from hashlib import sha1
 except ImportError: # Python < 2.5
     from sha import new as sha1
+import datetime
+import logging
+import os
+import os.path
+import setuptools.archive_util
 import shutil
+import tempfile
 import zc.buildout
+import zc.buildout.download
+
 
 def system(c):
     if os.system(c):
         raise SystemError("Failed", c)
 
-class Recipe:
+
+class Recipe(object):
 
     def __init__(self, buildout, name, options):
-        self.name, self.options = name, options
+        self.buildout, self.name, self.options = buildout, name, options
         directory = buildout['buildout']['directory']
-        self.download_cache = buildout['buildout'].get('download-cache')
-        self.install_from_cache = buildout['buildout'].get('install-from-cache')
-
-        if self.download_cache:
-            # cache keys are hashes of url, to ensure repeatability if the
-            # downloads do not have a version number in the filename
-            # cache key is a directory which contains the downloaded file
-            # download details stored with each key as cache.ini
-            self.download_cache = os.path.join(
-                directory, self.download_cache, 'cmmi')
-            if not os.path.isdir(self.download_cache):
-                os.mkdir(self.download_cache)
+        download_cache = buildout['buildout'].get('download-cache')
 
         location = options.get(
             'location', buildout['buildout']['parts-directory'])
@@ -72,15 +67,13 @@ class Recipe:
                 # since we remove it in case of build errors
                 self.shared = os.path.join(self.shared, 'cmmi')
             else:
-                if not self.download_cache:
+                if not download_cache:
                     raise ValueError(
                         "Set the 'shared' option of zc.recipe.cmmi to an existing"
                         " directory, or set ${buildout:download-cache}")
 
                 self.shared = os.path.join(
-                    directory, self.download_cache, 'build')
-                if not os.path.isdir(self.shared):
-                    os.mkdir(self.shared)
+                    directory, download_cache, 'cmmi', 'build')
                 self.shared = os.path.join(self.shared, self._state_hash())
 
             options['location'] = self.shared
@@ -96,21 +89,23 @@ class Recipe:
 
     def install(self):
         logger = logging.getLogger(self.name)
+        download = zc.buildout.download.Download(
+            self.buildout['buildout'], namespace='cmmi', hash_name=True,
+            logger=logger)
 
         if self.shared:
             if os.path.isdir(self.shared):
                 logger.info('using existing shared build')
                 return ()
             else:
-                os.mkdir(self.shared)
+                os.makedirs(self.shared)
 
         dest = self.options['location']
         here = os.getcwd()
         if not os.path.exists(dest):
             os.mkdir(dest)
 
-        fname = getFromCache(
-            self.url, self.name, self.download_cache, self.install_from_cache)
+        fname = download(self.url, md5sum=self.options.get('md5sum'))
 
         # now unpack and work as normal
         tmp = tempfile.mkdtemp('buildout-'+self.name)
@@ -132,12 +127,8 @@ class Recipe:
                 if self.patch is not '':
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
-                    if urlparse.urlparse(self.patch, None)[0] is not None:
-                        self.patch = getFromCache( self.patch
-                                            , self.name
-                                            , self.download_cache
-                                            , self.install_from_cache
-                                            )
+                    self.patch = download(
+                        self.patch, md5sum=self.options.get('patch-md5sum'))
                     system("patch %s < %s" % (self.patch_options, self.patch))
                 if self.autogen is not '':
                     logger.info('auto generating configure files')
@@ -162,67 +153,3 @@ class Recipe:
 
     def update(self):
         pass
-
-
-def getFromCache(url, name, download_cache=None, install_from_cache=False):
-    if download_cache:
-        cache_fname = sha1(url).hexdigest()
-        cache_name = os.path.join(download_cache, cache_fname)
-
-    _, _, urlpath, _, _ = urlparse.urlsplit(url)
-    filename = urlpath.split('/')[-1]
-
-    # get the file from the right place
-    fname = tmp2 = None
-    if download_cache:
-        # if we have a cache, try and use it
-        logging.getLogger(name).debug(
-            'Searching cache at %s' % download_cache)
-        if os.path.isdir(cache_name):
-            # just cache files for now
-            fname = os.path.join(cache_name, filename)
-            logging.getLogger(name).debug(
-                'Using cache file %s' % cache_name)
-
-        else:
-            logging.getLogger(name).debug(
-                'Did not find %s under cache key %s' % (filename, cache_name))
-
-    if not fname:
-        if install_from_cache:
-            # no file in the cache, but we are staying offline
-            raise zc.buildout.UserError(
-                "Offline mode: file from %s not found in the cache at %s" %
-                (url, download_cache))
-        try:
-            # okay, we've got to download now
-            # XXX: do we need to do something about permissions
-            # XXX: in case the cache is shared across users?
-            tmp2 = None
-            if download_cache:
-                # set up the cache and download into it
-                os.mkdir(cache_name)
-                fname = os.path.join(cache_name, filename)
-                if filename != "cache.ini":
-                    now = datetime.datetime.utcnow()
-                    cache_ini = open(os.path.join(cache_name, "cache.ini"), "w")
-                    print >>cache_ini, "[cache]"
-                    print >>cache_ini, "download_url =", url
-                    print >>cache_ini, "retrieved =", now.isoformat() + "Z"
-                    cache_ini.close()
-                logging.getLogger(name).debug(
-                    'Cache download %s as %s' % (url, cache_name))
-            else:
-                # use tempfile
-                tmp2 = tempfile.mkdtemp('buildout-' + name)
-                fname = os.path.join(tmp2, filename)
-                logging.getLogger(name).info('Downloading %s' % url)
-            open(fname, 'wb').write(urllib2.urlopen(url).read())
-        except:
-            if tmp2 is not None:
-               shutil.rmtree(tmp2)
-            if download_cache:
-               shutil.rmtree(cache_name)
-            raise
-
-    return fname

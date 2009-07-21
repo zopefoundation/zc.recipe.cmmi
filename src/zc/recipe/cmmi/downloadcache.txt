@@ -14,11 +14,14 @@ In this example, we'll create a directory to hold the cache:
 
     >>> cache = tmpdir('cache')
 
-We have an archive with a demo foo tar ball:
+We have an archive with a demo foo tar ball and publish it by http in order
+to see offline effects:
 
     >>> ls(distros)
     -  bar.tgz
     -  foo.tgz
+
+    >>> distros = start_server(distros)
 
 Let's update a sample buildout to install it:
 
@@ -31,7 +34,7 @@ Let's update a sample buildout to install it:
     ...
     ... [foo]
     ... recipe = zc.recipe.cmmi
-    ... url = file://%s/foo.tgz
+    ... url = %s/foo.tgz
     ... """ % (cache, distros))
 
 We used the url option to specify the location of the archive.
@@ -43,8 +46,8 @@ It creates a make file which is also run:
     ...
     Installing foo.
     foo: Searching cache at /cache/cmmi
-    foo: Did not find foo.tgz under cache key /cache/cmmi/...
-    foo: Cache download /distros/foo.tgz as /cache/cmmi/...
+    foo: Cache miss; will cache http://localhost//foo.tgz as /cache/cmmi/...
+    foo: Downloading http://localhost//foo.tgz
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
     echo building foo
@@ -66,15 +69,8 @@ download url:
 
     >>> import os
     >>> cache_path = os.path.join(cache, 'cmmi')
-    >>> cache_key = os.listdir(cache_path)[0]
-
-Each directory contains two files, the downloaded file and a record
-describing the download:
-
-    >>> cache_entry = os.path.join(cache_path, cache_key)
-    >>> ls(cache_entry)
-    -  cache.ini
-    -  foo.tgz
+    >>> len(os.listdir(cache_path))
+    1
 
 If we remove the installed parts and then re-run, we'll see that the
 files are not downloaded afresh:
@@ -114,8 +110,7 @@ are also removed, then it is downloaded afresh:
     ...
     Installing foo.
     foo: Searching cache at /cache/cmmi
-    foo: Did not find foo.tgz under cache key /cache/cmmi/...
-    foo: Cache download /distros/foo.tgz as /cache/cmmi/...
+    foo: Cache miss; will cache http://localhost//foo.tgz as /cache/cmmi/...
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
     echo building foo
@@ -140,7 +135,7 @@ the new cache is created and repopulated:
     ...
     ... [foo]
     ... recipe = zc.recipe.cmmi
-    ... url = file://%s/foo.tgz
+    ... url = %s/foo.tgz
     ... """ % (cache2, distros))
 
     >>> print system('bin/buildout')
@@ -148,8 +143,7 @@ the new cache is created and repopulated:
     ...
     Installing foo.
     foo: Searching cache at /cache2/cmmi
-    foo: Did not find foo.tgz under cache key /cache2/cmmi/...
-    foo: Cache download /distros/foo.tgz as /cache2/cmmi/...
+    foo: Cache miss; will cache http://localhost//foo.tgz as /cache2/cmmi/...
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
     echo building foo
@@ -161,7 +155,7 @@ the new cache is created and repopulated:
 The old cache is left in place:
 
     >>> ls(cache_path)
-    d ...
+    - ...
 
 Installing solely from a download cache
 ---------------------------------------
@@ -188,7 +182,7 @@ been removed, the files from the cache are used:
     ...
     ... [foo]
     ... recipe = zc.recipe.cmmi
-    ... url = file://%s/foo.tgz
+    ... url = %s/foo.tgz
     ... """ % (cache, distros))
 
     >>> for f in os.listdir('parts'):
@@ -224,9 +218,9 @@ the cache, an error is raised because the file is not in the cache:
     Uninstalling foo.
     Installing foo.
     foo: Searching cache at /cache/cmmi
-    foo: Did not find foo.tgz under cache key /cache/cmmi/...
+    foo: Cache miss; will cache http://localhost//foo.tgz as /cache/cmmi/...
     While:
       Installing foo.
-    Error: Offline mode: file from /distros/foo.tgz not found in the cache at /cache/cmmi
+    Error: Couldn't download 'http://localhost//foo.tgz' in offline mode.
     <BLANKLINE>
 

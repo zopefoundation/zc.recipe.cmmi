@@ -84,6 +84,8 @@ def test_suite():
                  '--prefix=/sample_buildout'),
                 (re.compile(' = \S+sample-buildout'),
                  ' = /sample_buildout'),
+                (re.compile('http://localhost:[0-9]{4,5}/'),
+                 'http://localhost/'),
                ]),
             optionflags = doctest.ELLIPSIS
             ),
@@ -101,6 +103,8 @@ def test_suite():
                zc.buildout.testing.normalize_script,
                zc.buildout.testing.normalize_egg_py,
                normalize_bang,
+               (re.compile('http://localhost:[0-9]{4,5}/'),
+                'http://localhost/'),
                (re.compile('extdemo[.]pyd'), 'extdemo.so')
                ]),
             optionflags = doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE

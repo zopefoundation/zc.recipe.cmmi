@@ -109,7 +109,6 @@ directory directly (instead of a name computed from to the recipe options):
     >>> remove('.installed.cfg')
     >>> print system('bin/buildout')
     Installing foo.
-    foo: Downloading /distros/foo.tgz
     foo: Unpacking and configuring
     configuring foo /cache/existing/cmmi
     echo building foo

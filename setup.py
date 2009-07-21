@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -21,14 +21,21 @@ def read(*rnames):
 name = "zc.recipe.cmmi"
 setup(
     name = name,
-    version = '1.2.1 dev',
+    version = '1.3dev',
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for configure/make/make install",
     license = "ZPL 2.1",
-    keywords = "zope3",
-    classifiers = ["Framework :: Buildout"],
-    url='http://www.python.org/pypi/'+name,
+    keywords = "zc.buildout buildout recipe cmmi configure make install",
+    classifiers = [
+        "Environment :: Plugins",
+        "Framework :: Buildout",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Zope Public License",
+        "Topic :: Software Development :: Build Tools",
+        "Topic :: System :: Software Distribution",
+        ],
+    url='http://pypi.python.org/pypi/'+name,
     long_description=(
         read('README.txt')
         + '\n' +
