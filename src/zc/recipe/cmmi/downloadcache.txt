@@ -19,6 +19,7 @@ to see offline effects:
 
     >>> ls(distros)
     -  bar.tgz
+    -  baz.tgz
     -  foo.tgz
 
     >>> distros = start_server(distros)

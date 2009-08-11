@@ -60,6 +60,14 @@ class Recipe(object):
         else:
             self.environ = {}
 
+        self.source_directory_contains = self.options.get(
+            'source-directory-contains', 'configure')
+        self.configure_cmd = self.options.get(
+            'configure-command', './configure')
+        self.configure_options = self.options.get('configure-options', None)
+        if self.configure_options:
+            self.configure_options = ' '.join(self.configure_options.split())
+
         self.shared = options.get('shared', None)
         if self.shared:
             if os.path.isdir(self.shared):
@@ -119,8 +127,8 @@ class Recipe(object):
         try:
             os.chdir(tmp)
             try:
-                if not (os.path.exists('configure') or
-                        os.path.exists(self.autogen)):
+                if not (os.path.exists(self.source_directory_contains) or
+                        (self.autogen and os.path.exists(self.autogen))):
                     entries = os.listdir(tmp)
                     if len(entries) == 1:
                         os.chdir(entries[0])
@@ -133,16 +141,13 @@ class Recipe(object):
                 if self.autogen is not '':
                     logger.info('auto generating configure files')
                     system("./%s" % self.autogen)
-                if not os.path.exists('configure'):
+                if not os.path.exists(self.source_directory_contains):
                     entries = os.listdir(tmp)
                     if len(entries) == 1:
                         os.chdir(entries[0])
                     else:
                         raise ValueError("Couldn't find configure")
-                system("./configure --prefix=%s %s" %
-                       (dest, self.extra_options))
-                system("make")
-                system("make install")
+                self.cmmi(dest)
             finally:
                 os.chdir(here)
         except:
@@ -153,3 +158,22 @@ class Recipe(object):
 
     def update(self):
         pass
+
+    def cmmi(self, dest):
+        """Do the 'configure; make; make install' command sequence.
+
+        When this is called, the current working directory is the
+        source directory.  The 'dest' parameter specifies the
+        installation prefix.
+
+        This can be overridden by subclasses to support packages whose
+        command sequence is different.
+        """
+        options = self.configure_options
+        if options is None:
+            options = '--prefix=%s' % dest
+        if self.extra_options:
+            options += ' %s' % self.extra_options
+        system("%s %s" % (self.configure_cmd, options))
+        system("make")
+        system("make install")

@@ -3,6 +3,7 @@ to see  offline effects:
 
     >>> ls(distros)
     -  bar.tgz
+    -  baz.tgz
     -  foo.tgz
 
     >>> distros_url = start_server(distros)
@@ -190,6 +191,33 @@ It is possible to autogenerate the configure files:
     foo: Unpacking and configuring
     foo: auto generating configure files
     configuring foo --prefix=/sample_buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+
+It is also possible to support configure commands other than "./configure":
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = %s/baz.tgz
+    ... source-directory-contains = configure.py
+    ... configure-command = ./configure.py
+    ... configure-options =
+    ...     --bindir=bin
+    ... """ % distros_url)
+
+    >>> print system('bin/buildout'),
+    Uninstalling foo.
+    Installing foo.
+    foo: Downloading http://localhost//baz.tgz
+    foo: Unpacking and configuring
+    configuring foo --bindir=bin
     echo building foo
     building foo
     echo installing foo

@@ -7,6 +7,12 @@ Release History
 - Use zc.buildout's download API. As this allows MD5 checking, added the
   md5sum and patch-md5sum options.
 
+- Added options for changing the name of the configure script and
+  overriding the ``--prefix`` parameter.
+
+- Moved the core "configure; make; make install" command sequence to a
+  method that can be overridden in other recipes, to support packages
+  whose installation process is slightly different.
 
 1.2.0 (2009-05-18)
 ==================

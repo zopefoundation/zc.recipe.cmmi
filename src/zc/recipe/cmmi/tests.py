@@ -26,6 +26,7 @@ def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.cmmi', test)
     distros = test.globs['distros'] = test.globs['tmpdir']('distros')
+
     tarpath = os.path.join(distros, 'foo.tgz')
     tar = tarfile.open(tarpath, 'w:gz')
     configure = configure_template % sys.executable
@@ -46,6 +47,14 @@ def setUp(test):
     info.size = len(autogen)
     info.mode = 0755
     tar.addfile(info, StringIO.StringIO(autogen))
+
+    tarpath = os.path.join(distros, 'baz.tgz')
+    tar = tarfile.open(tarpath, 'w:gz')
+    configure = configure_template % sys.executable
+    info = tarfile.TarInfo('configure.py')
+    info.size = len(configure)
+    info.mode = 0755
+    tar.addfile(info, StringIO.StringIO(configure))
 
 def add(tar, name, src, mode=None):
     info.size = len(src)
