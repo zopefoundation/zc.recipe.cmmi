@@ -215,3 +215,28 @@ directory:
     echo installing foo
     installing foo
     <BLANKLINE>
+
+
+Regression: Keeping track of a reused shared build
+==================================================
+
+zc.recipe.cmmi 1.2 had a bug that manifested when reusing a shared build by a
+second buildout: The part wouldn't keep track of the shared build and thus
+wasn't able to restore it if it got deleted from the cache. Let's simulate the
+second buildout by removing .installed.cfg, then this is how it should work:
+
+    >>> remove('.installed.cfg')
+    >>> print system('bin/buildout')
+    Installing foo.
+    foo: using existing shared build
+
+    >>> rmdir(cache, 'cmmi', 'build')
+    >>> print system('bin/buildout')
+    Uninstalling foo.
+    Installing foo.
+    foo: Unpacking and configuring
+    configuring foo /cache/cmmi/build/...
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo

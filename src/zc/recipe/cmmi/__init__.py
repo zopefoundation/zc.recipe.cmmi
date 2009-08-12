@@ -104,7 +104,7 @@ class Recipe(object):
         if self.shared:
             if os.path.isdir(self.shared):
                 logger.info('using existing shared build')
-                return ()
+                return self.shared
             else:
                 os.makedirs(self.shared)
 

@@ -14,6 +14,12 @@ Release History
   method that can be overridden in other recipes, to support packages
   whose installation process is slightly different.
 
+1.2.1 (2009-08-12)
+==================
+
+Bug fix: keep track of reused shared builds.
+
+
 1.2.0 (2009-05-18)
 ==================
 
