@@ -113,12 +113,16 @@ class Recipe(object):
         if not os.path.exists(dest):
             os.mkdir(dest)
 
-        fname = download(self.url, md5sum=self.options.get('md5sum'))
+        fname, is_temp = download(self.url, md5sum=self.options.get('md5sum'))
 
         # now unpack and work as normal
         tmp = tempfile.mkdtemp('buildout-'+self.name)
         logger.info('Unpacking and configuring')
-        setuptools.archive_util.unpack_archive(fname, tmp)
+        try:
+            setuptools.archive_util.unpack_archive(fname, tmp)
+        finally:
+            if is_temp:
+                os.remove(fname)
 
         for key, value in self.environ.items():
             logger.info('Updating environment: %s=%s' % (key, value))
@@ -135,9 +139,14 @@ class Recipe(object):
                 if self.patch is not '':
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
-                    self.patch = download(
+                    self.patch, is_temp = download(
                         self.patch, md5sum=self.options.get('patch-md5sum'))
-                    system("patch %s < %s" % (self.patch_options, self.patch))
+                    try:
+                        system("patch %s < %s"
+                               % (self.patch_options, self.patch))
+                    finally:
+                        if is_temp:
+                            os.remove(self.patch)
                 if self.autogen is not '':
                     logger.info('auto generating configure files')
                     system("./%s" % self.autogen)
