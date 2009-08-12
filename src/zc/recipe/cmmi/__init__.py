@@ -100,7 +100,7 @@ class Recipe:
         if self.shared:
             if os.path.isdir(self.shared):
                 logger.info('using existing shared build')
-                return ()
+                return self.shared
             else:
                 os.mkdir(self.shared)
 

@@ -4,7 +4,7 @@ Release History
 1.2.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+Bug fix: keep track of reused shared builds.
 
 
 1.2.0 (2009-05-18)
