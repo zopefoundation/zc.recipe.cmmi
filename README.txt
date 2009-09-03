@@ -11,3 +11,8 @@ configure-based source distribution into buildouts.
 SVN version:
 
   <svn://svn.zope.org/repos/main/zc.recipe.cmmi/trunk#egg=zc.recipe.cmmi-dev>
+
+
+.. note::
+
+    This recipe is not expected to work in a Microsoft Windows environment.
