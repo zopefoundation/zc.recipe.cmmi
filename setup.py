@@ -61,6 +61,7 @@ setup(
     data_files = [('.', ['README.txt'])],
     namespace_packages = ['zc', 'zc.recipe'],
     install_requires = ['zc.buildout >=1.4', 'setuptools'],
+    extras_require = dict(test=['zope.testing']),
     entry_points = {'zc.buildout':
                     ['default = %s:Recipe' % name]},
     zip_safe = True,
