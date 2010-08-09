@@ -7,6 +7,8 @@ Release History
 - Remove the build directory for a shared build when the source cannot be
   downloaded.
 
+- Declared a test dependency on zope.testing.
+
 
 1.3.1 (2009-09-10)
 ==================
