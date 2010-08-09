@@ -105,13 +105,6 @@ class Recipe(object):
             if os.path.isdir(self.shared):
                 logger.info('using existing shared build')
                 return self.shared
-            else:
-                os.makedirs(self.shared)
-
-        dest = self.options['location']
-        here = os.getcwd()
-        if not os.path.exists(dest):
-            os.mkdir(dest)
 
         fname, is_temp = download(self.url, md5sum=self.options.get('md5sum'))
 
@@ -128,7 +121,18 @@ class Recipe(object):
             logger.info('Updating environment: %s=%s' % (key, value))
         os.environ.update(self.environ)
 
+        # XXX This is probably more complicated than it needs to be. I
+        # retained the distinction between makedirs and mkdir when I moved
+        # creation of the build dir after downloading the source since I
+        # didn't understand the reason for the distinction. (tlotze)
+        if self.shared and not os.path.isdir(self.shared):
+            os.makedirs(self.shared)
+        dest = self.options['location']
+        if not os.path.exists(dest):
+            os.mkdir(dest)
+
         try:
+            here = os.getcwd()
             os.chdir(tmp)
             try:
                 if not (os.path.exists(self.source_directory_contains) or

@@ -240,3 +240,45 @@ second buildout by removing .installed.cfg, then this is how it should work:
     building foo
     echo installing foo
     installing foo
+
+
+Regression: Don't leave behind a build directory if the download failed
+=======================================================================
+
+zc.recipe.cmmi up to version 1.3.1 had a bug that caused an empty build
+directory to be left behind if a download failed, causing it to be mistaken
+for a good shared build.
+
+We cause the download to fail by specifying a nonsensical MD5 sum:
+
+    >>> shutil.rmtree(cache)
+    >>> cache = tmpdir('cache')
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ... download-cache = %s
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = file://%s/foo.tgz
+    ... md5sum = 1234
+    ... shared = True
+    ... """ % (cache, distros))
+
+    >>> remove('.installed.cfg')
+    >>> print system('bin/buildout')
+    Installing foo.
+    ...
+    Error: MD5 checksum mismatch for local resource at '/distros/foo.tgz'.
+
+The build directory must not exist anymore:
+
+    >>> ls(cache, 'cmmi')
+
+Another buildout run must fail the same way as the first attempt:
+
+    >>> print system('bin/buildout')
+    Installing foo.
+    ...
+    Error: MD5 checksum mismatch for local resource at '/distros/foo.tgz'.
