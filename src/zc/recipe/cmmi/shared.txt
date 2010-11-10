@@ -183,10 +183,17 @@ Now we reset the cache to force our broken tarball to be used:
     ... """ % (cache, distros))
 
     >>> remove('.installed.cfg')
-    >>> print system('bin/buildout')
+    >>> res = system('bin/buildout')
+    >>> print res
     Installing foo.
     ...
     ValueError: Couldn't find configure
+
+The temporary directory where tarball was unpacked was left behind for
+debugging purposes.
+
+    >>> import re
+    >>> shutil.rmtree(re.search('foo: cmmi failed: (.*)', res).group(1))
 
 When we now fix the error (by copying back the working version and resetting the
 cache), the build will be run again, and we don't use a half-baked shared

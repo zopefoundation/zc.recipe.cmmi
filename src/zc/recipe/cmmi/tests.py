@@ -17,7 +17,6 @@ import zc.buildout.testing
 
 import unittest
 import doctest
-import zope.testing
 from zope.testing import renormalizing
 from zc.buildout.tests import easy_install_SetUp
 from zc.buildout.tests import normalize_bang

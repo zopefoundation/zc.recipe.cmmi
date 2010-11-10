@@ -191,3 +191,78 @@ It is possible to autogenerate the configure files:
     building foo
     echo installing foo
     installing foo
+
+If the build fails, the temporary directory where the tarball was unpacked
+is logged to stdout, and left intact for debugging purposes.
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = file://%s/foo.tgz
+    ... patch = ${buildout:directory}/patches/config.patch
+    ... """ % distros)
+
+    >>> write('patches/config.patch', "dgdgdfgdfg")
+
+    >>> res =  system('bin/buildout')
+    >>> print res
+    Uninstalling foo.
+    Installing foo.
+    foo: Downloading .../foo.tgz
+    foo: Unpacking and configuring
+    patch unexpectedly ends in middle of line
+    foo: cmmi failed: /.../...buildout-foo
+    patch: **** Only garbage was found in the patch input.
+    While:
+      Installing foo.
+    <BLANKLINE>
+    An internal error occured due to a bug in either zc.buildout or in a
+    recipe being used:
+    ...
+    SystemError: ('Failed', 'patch -p0 < /.../patches/config.patch')
+    <BLANKLINE>
+
+    >>> import re
+    >>> import os.path
+    >>> import shutil
+    >>> path = re.search('foo: cmmi failed: (.*)', res).group(1)
+    >>> os.path.exists(path)
+    True
+    >>> shutil.rmtree(path)
+
+After a successful build, such temporary directories are removed.
+
+    >>> import glob
+    >>> import tempfile
+
+    >>> tempdir = tempfile.gettempdir()
+    >>> dirs = glob.glob(os.path.join(tempdir, '*buildout-foo'))
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = file://%s/foo.tgz
+    ... """ % distros)
+
+    >>> print system("bin/buildout")
+    Installing foo.
+    foo: Downloading .../foo.tgz
+    foo: Unpacking and configuring
+    configuring foo --prefix=/sample_buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+    <BLANKLINE>
+
+    >>> new_dirs = glob.glob(os.path.join(tempdir, '*buildout-foo'))
+    >>> dirs == new_dirs
+    True

@@ -109,13 +109,17 @@ class Recipe:
         if not os.path.exists(dest):
             os.mkdir(dest)
 
-        fname = getFromCache(
+        fname, is_temp = getFromCache(
             self.url, self.name, self.download_cache, self.install_from_cache)
 
-        # now unpack and work as normal
-        tmp = tempfile.mkdtemp('buildout-'+self.name)
-        logger.info('Unpacking and configuring')
-        setuptools.archive_util.unpack_archive(fname, tmp)
+        try:
+            # now unpack and work as normal
+            tmp = tempfile.mkdtemp('buildout-'+self.name)
+            logger.info('Unpacking and configuring')
+            setuptools.archive_util.unpack_archive(fname, tmp)
+        finally:
+            if is_temp:
+                os.remove(fname)
 
         for key, value in self.environ.items():
             logger.info('Updating environment: %s=%s' % (key, value))
@@ -133,12 +137,15 @@ class Recipe:
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
                     if urlparse.urlparse(self.patch, None)[0] is not None:
-                        self.patch = getFromCache( self.patch
-                                            , self.name
-                                            , self.download_cache
-                                            , self.install_from_cache
-                                            )
-                    system("patch %s < %s" % (self.patch_options, self.patch))
+                        self.patch, is_temp = getFromCache(
+                            self.patch, self.name, self.download_cache,
+                            self.install_from_cache)
+                    try:
+                        system(
+                            "patch %s < %s" % (self.patch_options, self.patch))
+                    finally:
+                        if is_temp:
+                            os.remove(self.patch)
                 if self.autogen is not '':
                     logger.info('auto generating configure files')
                     system("./%s" % self.autogen)
@@ -152,9 +159,12 @@ class Recipe:
                        (dest, self.extra_options))
                 system("make")
                 system("make install")
+                shutil.rmtree(tmp)
             finally:
                 os.chdir(here)
         except:
+            if os.path.exists(tmp):
+                logger.error("cmmi failed: %s", tmp)
             shutil.rmtree(dest)
             raise
 
@@ -214,15 +224,16 @@ def getFromCache(url, name, download_cache=None, install_from_cache=False):
                     'Cache download %s as %s' % (url, cache_name))
             else:
                 # use tempfile
-                tmp2 = tempfile.mkdtemp('buildout-' + name)
-                fname = os.path.join(tmp2, filename)
+                fd, tmp2 = tempfile.mkstemp('buildout-' + name)
+                os.close(fd)
+                fname = tmp2
                 logging.getLogger(name).info('Downloading %s' % url)
             open(fname, 'wb').write(urllib2.urlopen(url).read())
         except:
             if tmp2 is not None:
-               shutil.rmtree(tmp2)
+               os.remove(tmp2)
             if download_cache:
                shutil.rmtree(cache_name)
             raise
 
-    return fname
+    return fname, bool(tmp2)
