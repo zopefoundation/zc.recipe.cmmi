@@ -143,8 +143,16 @@ class Recipe(object):
                 if self.patch is not '':
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
-                    self.patch, is_temp = download(
-                        self.patch, md5sum=self.options.get('patch-md5sum'))
+                    if self.patch is not '':
+                        try:
+                            self.patch, is_temp = download(
+                                self.patch,
+                                md5sum=self.options.get('patch-md5sum'))
+                        except:
+                            # If download/checksum of the patch fails, leaving
+                            # the tmp dir won't be helpful.
+                            shutil.rmtree(tmp)
+                            raise
                     try:
                         system("patch %s < %s"
                                % (self.patch_options, self.patch))
@@ -161,10 +169,13 @@ class Recipe(object):
                     else:
                         raise ValueError("Couldn't find configure")
                 self.cmmi(dest)
+                shutil.rmtree(tmp)
             finally:
                 os.chdir(here)
         except:
             shutil.rmtree(dest)
+            if os.path.exists(tmp):
+                logger.error("cmmi failed: %s", tmp)
             raise
 
         return dest

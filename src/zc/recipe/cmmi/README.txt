@@ -297,3 +297,77 @@ aborted:
     While:
       Installing foo.
     Error: MD5 checksum mismatch for local resource at '/.../sample-buildout/patches/config.patch'.
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = %sfoo.tgz
+    ... patch = ${buildout:directory}/patches/config.patch
+    ... """ % (distros_url))
+
+If the build fails, the temporary directory where the tarball was unpacked
+is logged to stdout, and left intact for debugging purposes.
+
+    >>> write('patches/config.patch', "dgdgdfgdfg")
+
+    >>> res =  system('bin/buildout')
+    >>> print res
+    Installing foo.
+    foo: Downloading http://localhost/foo.tgz
+    foo: Unpacking and configuring
+    patch unexpectedly ends in middle of line
+    foo: cmmi failed: /.../...buildout-foo
+    patch: **** Only garbage was found in the patch input.
+    While:
+      Installing foo.
+    <BLANKLINE>
+    An internal error occured due to a bug in either zc.buildout or in a
+    recipe being used:
+    ...
+    SystemError: ('Failed', 'patch -p0 < /.../patches/config.patch')
+    <BLANKLINE>
+
+    >>> import re
+    >>> import os.path
+    >>> import shutil
+    >>> path = re.search('foo: cmmi failed: (.*)', res).group(1)
+    >>> os.path.exists(path)
+    True
+    >>> shutil.rmtree(path)
+
+After a successful build, such temporary directories are removed.
+
+    >>> import glob
+    >>> import tempfile
+
+    >>> tempdir = tempfile.gettempdir()
+    >>> dirs = len(glob.glob(os.path.join(tempdir, '*buildout-foo')))
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = %sfoo.tgz
+    ... """ % (distros_url,))
+
+    >>> print system("bin/buildout")
+    Installing foo.
+    foo: Downloading http://localhost:21445/foo.tgz
+    foo: Unpacking and configuring
+    configuring foo --prefix=/sample_buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+    <BLANKLINE>
+
+    >>> new_dirs = len(glob.glob(os.path.join(tempdir, '*buildout-foo')))
+    >>> dirs == new_dirs
+    True
