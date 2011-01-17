@@ -37,8 +37,9 @@ It creates a make file which is also run:
 
 The recipe also creates the parts directory:
 
-    >>> ls(sample_buildout, 'parts')
-    d  foo
+    >>> import os.path
+    >>> os.path.isdir(join(sample_buildout, "parts", "foo"))
+    True
 
 If we run the buildout again, the update method will be called, which
 does nothing:
@@ -325,7 +326,7 @@ is logged to stdout, and left intact for debugging purposes.
     While:
       Installing foo.
     <BLANKLINE>
-    An internal error occured due to a bug in either zc.buildout or in a
+    An internal error occurred due to a bug in either zc.buildout or in a
     recipe being used:
     ...
     SystemError: ('Failed', 'patch -p0 < /.../patches/config.patch')

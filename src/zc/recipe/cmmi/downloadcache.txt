@@ -76,10 +76,12 @@ download url:
 If we remove the installed parts and then re-run, we'll see that the
 files are not downloaded afresh:
 
-    >>> import os
-    >>> for f in os.listdir('parts'):
-    ...     remove('parts', f)
-   
+    >>> def remove_parts():
+    ...     for f in os.listdir("parts"):
+    ...         if f != "buildout":
+    ...             remove("parts", f)
+    >>> remove_parts()
+
     >>> print system(buildout)
     In...
     ...
@@ -103,8 +105,7 @@ are also removed, then it is downloaded afresh:
     >>> for f in os.listdir( cache_path ):
     ...   remove (cache_path, f)
 
-    >>> for f in os.listdir('parts'):
-    ...     remove('parts', f)
+    >>> remove_parts()
 
     >>> print system('bin/buildout')
     In...
@@ -123,8 +124,7 @@ are also removed, then it is downloaded afresh:
 If the cache location is changed, and the installed parts are removed,
 the new cache is created and repopulated:
 
-    >>> for f in os.listdir('parts'):
-    ...     remove('parts', f)
+    >>> remove_parts()
 
     >>> cache2 = tmpdir('cache2')
     >>> write('buildout.cfg',
@@ -186,8 +186,7 @@ been removed, the files from the cache are used:
     ... url = %s/foo.tgz
     ... """ % (cache, distros))
 
-    >>> for f in os.listdir('parts'):
-    ...     remove('parts', f)
+    >>> remove_parts()
 
     >>> print system(buildout)
     In...
@@ -210,8 +209,7 @@ the cache, an error is raised because the file is not in the cache:
     >>> for f in os.listdir( cache_path ):
     ...   remove (cache_path, f)
 
-    >>> for f in os.listdir('parts'):
-    ...     remove('parts', f)
+    >>> remove_parts()
 
     >>> print system(buildout)
     In...

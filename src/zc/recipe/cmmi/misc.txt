@@ -27,12 +27,12 @@ is launched::
     ... url = file://%s/foo.tgz
     ... """ % (distros))
 
-    >>> print system('bin/buildout') 
+    >>> print system('bin/buildout')
     Installing...
     ...
     installing foo
     <BLANKLINE>
-    
-    >>> ls(join(sample_buildout, 'parts'))
-    d  foo
 
+    >>> import os.path
+    >>> os.path.isdir(join(sample_buildout, "parts", "foo"))
+    True

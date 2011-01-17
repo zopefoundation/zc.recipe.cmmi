@@ -94,6 +94,7 @@ def test_suite():
                  ' = /sample_buildout'),
                 (re.compile('http://localhost:[0-9]{4,5}/'),
                  'http://localhost/'),
+                (re.compile('occured'), 'occurred'),
                ]),
             optionflags = doctest.ELLIPSIS
             ),
