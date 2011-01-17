@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006-2009 Zope Corporation and Contributors.
+# Copyright (c) 2006-2011 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,7 +16,6 @@ try:
     from hashlib import sha1
 except ImportError: # Python < 2.5
     from sha import new as sha1
-import datetime
 import logging
 import os
 import os.path
