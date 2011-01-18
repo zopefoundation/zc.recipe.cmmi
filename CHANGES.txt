@@ -1,8 +1,8 @@
 Release History
 ***************
 
-1.4 (unreleased)
-================
+1.3.4 (2011-01-18)
+==================
 
 - Fixed a bug in location book-keeping that caused shared builds to be deleted
   from disk when a part didn't need them anymore. (#695977)
