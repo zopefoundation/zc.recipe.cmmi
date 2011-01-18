@@ -114,7 +114,8 @@ def test_suite():
                normalize_bang,
                (re.compile('http://localhost:[0-9]{4,5}/'),
                 'http://localhost/'),
-               (re.compile('extdemo[.]pyd'), 'extdemo.so')
+               (re.compile('extdemo[.]pyd'), 'extdemo.so'),
+               (re.compile('[0-9a-f]{40}'), '<BUILDID>'),
                ]),
             optionflags = doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
             ),

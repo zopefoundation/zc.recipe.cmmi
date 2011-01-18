@@ -23,7 +23,7 @@ When run the first time, the build is executed as usual:
     >>> print system('bin/buildout')
     Installing foo.
     foo: Unpacking and configuring
-    configuring foo /cache/cmmi/build/...
+    configuring foo /cache/cmmi/build/<BUILDID>
     echo building foo
     building foo
     echo installing foo
@@ -47,7 +47,7 @@ By default, the shared build directory is named with a hash of the recipe's
 configuration options (but it can also be configured manually, see below):
 
     >>> ls(cache, 'cmmi', 'build')
-    d  ...
+    d  <BUILDID>
 
 For example, if the download url changes, the build is executed again:
 
@@ -71,7 +71,7 @@ For example, if the download url changes, the build is executed again:
     >>> print system('bin/buildout')
     Installing qux.
     qux: Unpacking and configuring
-    configuring foo /cache/cmmi/build/...
+    configuring foo /cache/cmmi/build/<BUILDID>
     echo building foo
     building foo
     echo installing foo
@@ -80,8 +80,8 @@ For example, if the download url changes, the build is executed again:
 and another shared directory is created:
 
     >>> ls(cache, 'cmmi', 'build')
-    d  ...
-    d  ...
+    d  <BUILDID>
+    d  <BUILDID>
 
 (Other recipes can retrieve the shared build directory from our part's
 `location` as usual, so the SHA-names shouldn't be a problem.)
@@ -216,7 +216,7 @@ directory:
     >>> print system('bin/buildout')
     Installing foo.
     foo: Unpacking and configuring
-    configuring foo /cache/cmmi/build/...
+    configuring foo /cache/cmmi/build/<BUILDID>
     echo building foo
     building foo
     echo installing foo
@@ -242,7 +242,7 @@ second buildout by removing .installed.cfg, then this is how it should work:
     Uninstalling foo.
     Installing foo.
     foo: Unpacking and configuring
-    configuring foo /cache/cmmi/build/...
+    configuring foo /cache/cmmi/build/<BUILDID>
     echo building foo
     building foo
     echo installing foo
