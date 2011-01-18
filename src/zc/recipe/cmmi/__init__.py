@@ -38,10 +38,6 @@ class Recipe(object):
         directory = buildout['buildout']['directory']
         download_cache = buildout['buildout'].get('download-cache')
 
-        location = options.get(
-            'location', buildout['buildout']['parts-directory'])
-        options['location'] = os.path.join(location, name)
-
         self.url = self.options['url']
         extra_options = self.options.get('extra_options', '')
         # get rid of any newlines that may be in the options so they
@@ -83,7 +79,12 @@ class Recipe(object):
                     directory, download_cache, 'cmmi', 'build')
                 self.shared = os.path.join(self.shared, self._state_hash())
 
-            options['location'] = self.shared
+            location = self.shared
+        else:
+            location = os.path.join(options.get(
+                    'location', buildout['buildout']['parts-directory']), name)
+
+        options['location'] = location
 
     def _state_hash(self):
         # hash of our configuration state, so that e.g. different
