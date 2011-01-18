@@ -96,6 +96,17 @@ class Recipe(object):
         return sha1(''.join(state)).hexdigest()
 
     def install(self):
+        self.build()
+        if self.shared:
+            return ''
+        else:
+            return self.options['location']
+
+    def update(self):
+        if not os.path.isdir(self.options['location']):
+            self.build()
+
+    def build(self):
         logger = logging.getLogger(self.name)
         download = zc.buildout.download.Download(
             self.buildout['buildout'], namespace='cmmi', hash_name=True,
@@ -177,11 +188,6 @@ class Recipe(object):
             if os.path.exists(tmp):
                 logger.error("cmmi failed: %s", tmp)
             raise
-
-        return dest
-
-    def update(self):
-        pass
 
     def cmmi(self, dest):
         """Do the 'configure; make; make install' command sequence.

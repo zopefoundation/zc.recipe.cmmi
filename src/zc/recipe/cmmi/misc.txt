@@ -36,3 +36,39 @@ is launched::
     >>> import os.path
     >>> os.path.isdir(join(sample_buildout, "parts", "foo"))
     True
+
+Removing the parts folder
+-------------------------
+
+As a result of featuring shared builds, the handling of zc.recipe.cmmi's
+associated file-system paths is not entirely trivial. Let's make sure that
+when not sharing the build, the recipe gets the book-keeping of its part
+directory right.
+
+The part's directory is created when the part is installed:
+
+    >>> remove('.installed.cfg')
+    >>> rmdir('parts', 'foo')
+
+    >>> print system('bin/buildout')
+    Installing...
+    ...
+    installing foo
+
+    >>> os.path.isdir(join(sample_buildout, "parts", "foo"))
+    True
+
+The part's directory is removed when it is no longer needed (e.g. because the
+part now uses a shared build or because the part is gone altogether):
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = 
+    ... """)
+
+    >>> print system('bin/buildout')
+    Uninstalling foo.
+
+    >>> os.path.isdir(join(sample_buildout, "parts", "foo"))
+    False

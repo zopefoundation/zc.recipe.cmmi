@@ -4,6 +4,9 @@ Release History
 1.4 (unreleased)
 ================
 
+- Fixed a bug in location book-keeping that caused shared builds to be deleted
+  from disk when a part didn't need them anymore. (#695977)
+
 - Made tests pass with both zc.buildout 1.4 and 1.5, lifted the upper version
   bound on zc.buildout. (#695732)
 
