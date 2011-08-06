@@ -1,10 +1,12 @@
 Release History
 ***************
 
-1.4 (unreleased)
-================
+1.3.5 (2011-08-06)
+==================
 
-- Nothing changed yet.
+- Fixed: Spaces weren't allowed in environment variables.
+
+- Fixed: Added missing option reference documentation.
 
 
 1.3.4 (2011-01-18)
