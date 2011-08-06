@@ -21,7 +21,7 @@ def read(*rnames):
 name = "zc.recipe.cmmi"
 setup(
     name = name,
-    version='1.4dev',
+    version='1.3.5',
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for configure/make/make install",
