@@ -19,12 +19,15 @@ except ImportError: # Python < 2.5
 import logging
 import os
 import os.path
+import re
 import setuptools.archive_util
 import shutil
 import tempfile
 import zc.buildout
 import zc.buildout.download
 
+almost_environment_setting = re.compile('\w+=').match
+not_starting_with_digit = re.compile('\D').match
 
 def system(c):
     if os.system(c):
@@ -49,9 +52,19 @@ class Recipe(object):
         self.patch = self.options.get('patch', '')
         self.patch_options = self.options.get('patch_options', '-p0')
 
-        self.environ = self.options.get('environment', '').split()
-        if self.environ:
-            self.environ = dict([x.split('=', 1) for x in self.environ])
+        environ = []
+        for token in self.options.get('environment', '').split():
+            if (almost_environment_setting(token) and
+                not_starting_with_digit(token)):
+                environ.append(token)
+            else:
+                if environ:
+                    environ[-1] += ' ' + token
+                else:
+                    raise ValueError('Bad environment setting', token)
+
+        if environ:
+            self.environ = dict([x.split('=', 1) for x in environ])
         else:
             self.environ = {}
 
@@ -72,7 +85,8 @@ class Recipe(object):
             else:
                 if not download_cache:
                     raise ValueError(
-                        "Set the 'shared' option of zc.recipe.cmmi to an existing"
+                        "Set the 'shared' option of zc.recipe.cmmi"
+                        " to an existing"
                         " directory, or set ${buildout:download-cache}")
 
                 self.shared = os.path.join(
@@ -128,7 +142,7 @@ class Recipe(object):
             if is_temp:
                 os.remove(fname)
 
-        for key, value in self.environ.items():
+        for key, value in sorted(self.environ.items()):
             logger.info('Updating environment: %s=%s' % (key, value))
         os.environ.update(self.environ)
 

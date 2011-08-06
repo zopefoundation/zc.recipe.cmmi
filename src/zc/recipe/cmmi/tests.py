@@ -98,25 +98,36 @@ def test_suite():
                ]),
             optionflags = doctest.ELLIPSIS
             ),
-
         doctest.DocFileSuite(
             'downloadcache.txt',
-            'misc.txt',
             'patching.txt',
             'shared.txt',
             setUp=setUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
 
             checker=renormalizing.RENormalizing([
-               zc.buildout.testing.normalize_path,
-               zc.buildout.testing.normalize_script,
-               zc.buildout.testing.normalize_egg_py,
-               normalize_bang,
-               (re.compile('http://localhost:[0-9]{4,5}/'),
-                'http://localhost/'),
-               (re.compile('extdemo[.]pyd'), 'extdemo.so'),
-               (re.compile('[0-9a-f]{40}'), '<BUILDID>'),
-               ]),
+                zc.buildout.testing.normalize_path,
+                zc.buildout.testing.normalize_script,
+                zc.buildout.testing.normalize_egg_py,
+                normalize_bang,
+                (re.compile('http://localhost:[0-9]{4,5}/'),
+                 'http://localhost/'),
+                (re.compile('extdemo[.]pyd'), 'extdemo.so'),
+                (re.compile('[0-9a-f]{40}'), '<BUILDID>'),
+                ]),
+            optionflags = doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
+            ),
+        doctest.DocFileSuite(
+            'misc.txt',
+            setUp=setUp,
+            tearDown=zc.buildout.testing.buildoutTearDown,
+
+            checker=renormalizing.RENormalizing([
+                (re.compile('--prefix=\S+sample-buildout'),
+                 '--prefix=/sample_buildout'),
+                (re.compile('http://localhost:[0-9]{4,5}/'),
+                 'http://localhost/'),
+                ]),
             optionflags = doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
             ),
         ))

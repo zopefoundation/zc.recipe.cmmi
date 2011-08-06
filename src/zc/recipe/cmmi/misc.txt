@@ -72,3 +72,37 @@ part now uses a shared build or because the part is gone altogether):
 
     >>> os.path.isdir(join(sample_buildout, "parts", "foo"))
     False
+
+Spaces in environment variables
+-------------------------------
+
+Unfortunately, environment option parsing is simplistic and makes it
+hard to include spaces.  We allow spaces if the tokens after spaves
+aren't of the form NAME=.....
+
+
+    >>> distros_url = start_server(distros)
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = %sfoo.tgz
+    ... environment =
+    ...   CFLAGS=-I/yyy -I/xxx --x=y 2=1+1 a=b
+    ... """ % distros_url)
+
+    >>> print system('bin/buildout'),
+    Installing foo.
+    foo: Downloading http://localhost/foo.tgz
+    foo: Unpacking and configuring
+    foo: Updating environment: CFLAGS=-I/yyy -I/xxx --x=y 2=1+1
+    foo: Updating environment: a=b
+    configuring foo --prefix=/sample_buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
