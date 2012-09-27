@@ -215,7 +215,7 @@ class Recipe(object):
         """
         options = self.configure_options
         if options is None:
-            options = '--prefix=%s' % dest
+            options = '--prefix="%s"' % dest
         if self.extra_options:
             options += ' %s' % self.extra_options
         system("%s %s" % (self.configure_cmd, options))
