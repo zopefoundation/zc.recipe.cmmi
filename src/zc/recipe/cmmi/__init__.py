@@ -165,10 +165,10 @@ class Recipe(object):
                     entries = os.listdir(tmp)
                     if len(entries) == 1:
                         os.chdir(entries[0])
-                if self.patch is not '':
+                if self.patch != '':
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
-                    if self.patch is not '':
+                    if self.patch != '':
                         try:
                             self.patch, is_temp = download(
                                 self.patch,
@@ -184,7 +184,7 @@ class Recipe(object):
                     finally:
                         if is_temp:
                             os.remove(self.patch)
-                if self.autogen is not '':
+                if self.autogen != '':
                     logger.info('auto generating configure files')
                     system("./%s" % self.autogen)
                 if not os.path.exists(self.source_directory_contains):
