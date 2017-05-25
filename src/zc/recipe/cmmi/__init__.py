@@ -12,26 +12,26 @@
 #
 ##############################################################################
 
-try:
-    from hashlib import sha1
-except ImportError: # Python < 2.5
-    from sha import new as sha1
+
+from hashlib import sha1
 import logging
 import os
 import os.path
 import re
+import subprocess
 import setuptools.archive_util
 import shutil
 import tempfile
 import zc.buildout
 import zc.buildout.download
 
-almost_environment_setting = re.compile('\w+=').match
-not_starting_with_digit = re.compile('\D').match
+almost_environment_setting = re.compile(r'\w+=').match
+not_starting_with_digit = re.compile(r'\D').match
 
 def system(c):
-    if os.system(c):
-        raise SystemError("Failed", c)
+    subprocess.check_call(c, shell=True)
+    # if os.system(c):
+    #     raise SystemError("Failed", c)
 
 
 class Recipe(object):
@@ -102,9 +102,12 @@ class Recipe(object):
 
     def _state_hash(self):
         # hash of our configuration state, so that e.g. different
-        # ./configure options will get a different build directory
+        # ./configure options will get a different build directory.
+        # Be sure to sort to keep a consistent order, since dictionary iteration order
+        # is never guaranteed.
+        # XXX: This doesn't actually fix it.
         env = ''.join(['%s%s' % (key, value) for key, value
-                       in self.environ.items()])
+                       in sorted(self.environ.items())])
         state = [self.url, self.extra_options, self.autogen,
                  self.patch, self.patch_options, env]
         return sha1(''.join(state)).hexdigest()
@@ -113,8 +116,7 @@ class Recipe(object):
         self.build()
         if self.shared:
             return ''
-        else:
-            return self.options['location']
+        return self.options['location']
 
     def update(self):
         if not os.path.isdir(self.options['location']):
@@ -134,7 +136,7 @@ class Recipe(object):
         fname, is_temp = download(self.url, md5sum=self.options.get('md5sum'))
 
         # now unpack and work as normal
-        tmp = tempfile.mkdtemp('buildout-'+self.name)
+        tmp = tempfile.mkdtemp('buildout-' + self.name)
         logger.info('Unpacking and configuring')
         try:
             setuptools.archive_util.unpack_archive(fname, tmp)
@@ -143,7 +145,7 @@ class Recipe(object):
                 os.remove(fname)
 
         for key, value in sorted(self.environ.items()):
-            logger.info('Updating environment: %s=%s' % (key, value))
+            logger.info('Updating environment: %s=%s', key, value)
         os.environ.update(self.environ)
 
         # XXX This is probably more complicated than it needs to be. I
@@ -163,7 +165,7 @@ class Recipe(object):
                 if not (os.path.exists(self.source_directory_contains) or
                         (self.autogen and os.path.exists(self.autogen))):
                     entries = os.listdir(tmp)
-                    if len(entries) == 1:
+                    if len(entries) == 1 and os.path.isdir(entries[0]):
                         os.chdir(entries[0])
                 if self.patch != '':
                     # patch may be a filesystem path or url
@@ -189,7 +191,7 @@ class Recipe(object):
                     system("./%s" % self.autogen)
                 if not os.path.exists(self.source_directory_contains):
                     entries = os.listdir(tmp)
-                    if len(entries) == 1:
+                    if len(entries) == 1 and os.path.isdir(entries[0]):
                         os.chdir(entries[0])
                     else:
                         raise ValueError("Couldn't find configure")

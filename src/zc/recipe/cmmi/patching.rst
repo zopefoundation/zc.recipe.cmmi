@@ -3,12 +3,12 @@ Loading Patces from URLs
 
 Patch files can be loaded from URLs as well as files.
 
-Any downloaded patch files can be cached in a download cache if 
-available, in exactly the same way as for tarballs.  Similarly, 
-if the build is set to offline operation, then it will not download 
+Any downloaded patch files can be cached in a download cache if
+available, in exactly the same way as for tarballs.  Similarly,
+if the build is set to offline operation, then it will not download
 from a remote location.
 
-To see how this works, we'll set up a web server with a patch file, 
+To see how this works, we'll set up a web server with a patch file,
 and a cache with our tarball in:
 
     >>> import sys, os
@@ -21,8 +21,8 @@ and a cache with our tarball in:
     ... @@ -1,13 +1,13 @@
     ...  #!%s
     ...  import sys
-    ... -print "configuring foo", ' '.join(sys.argv[1:])
-    ... +print "configuring foo patched", ' '.join(sys.argv[1:])
+    ... -print("configuring foo " + ' '.join(sys.argv[1:]))
+    ... +print("configuring foo patched " + ' '.join(sys.argv[1:]))
     ...
     ...  Makefile_template = '''
     ...  all:
@@ -55,7 +55,7 @@ Now let's create a buildout.cfg file.
     ... patch = %(server_url)s/config.patch
     ... """ % dict(distros=distros,server_url=server_url,cache=cache))
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     In...
     Installing foo.
     foo: Searching cache at /cache/cmmi
@@ -83,4 +83,3 @@ We can see that the patch is now in the cache, as well as the tarball:
     >>> ls(cache_path)
     - ...
     - ...
-

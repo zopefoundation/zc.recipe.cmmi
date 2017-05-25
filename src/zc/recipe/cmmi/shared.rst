@@ -20,7 +20,7 @@ several buildouts. To do this, use the `shared` option:
 
 When run the first time, the build is executed as usual:
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
@@ -34,7 +34,7 @@ But after that, the existing shared build directory is used instead of running
 the build again:
 
     >>> remove('.installed.cfg')
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing foo.
     foo: using existing shared build
     <BLANKLINE>
@@ -68,7 +68,7 @@ For example, if the download url changes, the build is executed again:
     ... url = file://%s/qux.tgz
     ... shared = True
     ... """ % (cache, distros))
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing qux.
     qux: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
@@ -107,7 +107,7 @@ directory directly (instead of a name computed from to the recipe options):
     ... """ % (distros, shared))
 
     >>> remove('.installed.cfg')
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /cache/existing/cmmi
@@ -130,13 +130,13 @@ If no download-cache is set, and `shared` is not a directory, an error is raised
     ... shared = True
     ... """ % distros)
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout').strip())
     While:
       Installing.
       Getting section foo.
-      Initializing part foo.
+      Initializing section foo.
     ...
-    ValueError:  Set the 'shared' option of zc.recipe.cmmi to an existing
+    ValueError: Set the 'shared' option of zc.recipe.cmmi to an existing
     directory, or set ${buildout:download-cache}
 
 
@@ -158,12 +158,12 @@ Then we create a broken tarball:
     >>> import StringIO
     >>> import sys
     >>> tarpath = os.path.join(distros, 'foo.tgz')
-    >>> tar = tarfile.open(tarpath, 'w:gz')
-    >>> configure = 'invalid'
-    >>> info = tarfile.TarInfo('configure')
-    >>> info.size = len(configure)
-    >>> info.mode = 0755
-    >>> tar.addfile(info, StringIO.StringIO(configure))
+    >>> with tarfile.open(tarpath, 'w:gz') as tar:
+    ...    configure = 'invalid'
+    ...    info = tarfile.TarInfo('configure.off')
+    ...    info.size = len(configure)
+    ...    info.mode = 0o755
+    ...    tar.addfile(info, StringIO.StringIO(configure))
 
 Now we reset the cache to force our broken tarball to be used:
 
@@ -213,7 +213,7 @@ directory:
     ... url = file://%s/foo.tgz
     ... shared = True
     ... """ % (cache, distros))
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
@@ -249,7 +249,7 @@ If someone deletes this shared build, updating the buildout part that needs it
 will cause it to be rebuilt:
 
     >>> rmdir(cache, 'cmmi', 'build')
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Updating foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
@@ -274,7 +274,7 @@ If we stop using the shared build, it stays in the build cache:
     ... url = file://%s/foo.tgz
     ... """ % (cache, distros))
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Uninstalling foo.
     Installing foo.
     foo: Unpacking and configuring
@@ -309,7 +309,7 @@ from the story so far:
     ... shared = True
     ... """ % (cache, distros))
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
@@ -323,12 +323,12 @@ part wouldn't keep track of the shared build and thus wasn't able to restore
 it if it got deleted from the cache. This is how it should work:
 
     >>> remove('.installed.cfg')
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing foo.
     foo: using existing shared build
 
     >>> rmdir(cache, 'cmmi', 'build')
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout').strip())
     Updating foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
@@ -363,7 +363,7 @@ We cause the download to fail by specifying a nonsensical MD5 sum:
     ... """ % (cache, distros))
 
     >>> remove('.installed.cfg')
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing foo.
     ...
     Error: MD5 checksum mismatch for local resource at '/distros/foo.tgz'.
@@ -374,7 +374,7 @@ The build directory must not exist anymore:
 
 Another buildout run must fail the same way as the first attempt:
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing foo.
     ...
     Error: MD5 checksum mismatch for local resource at '/distros/foo.tgz'.

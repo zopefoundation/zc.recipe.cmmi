@@ -1,8 +1,12 @@
 Release History
 ***************
 
-1.4.0 (unreleased)
+2.0.0 (unreleased)
 ==================
+
+- Add support for Python 3.4, 3.5, 3.6 and PyPy.
+
+- Automated testing is enabled on Travis CI.
 
 1.3.6 (2014-04-14)
 ==================

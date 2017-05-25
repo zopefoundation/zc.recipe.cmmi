@@ -25,7 +25,7 @@ We used the url option to specify the location of the archive.
 If we run the buildout, the configure script in the archive is run.
 It creates a make file which is also run:
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
@@ -44,7 +44,7 @@ The recipe also creates the parts directory:
 If we run the buildout again, the update method will be called, which
 does nothing:
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Updating foo.
 
 You can supply extra configure options:
@@ -60,7 +60,7 @@ You can supply extra configure options:
     ... extra_options = -a -b c
     ... """ % distros_url)
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Uninstalling foo.
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
@@ -75,17 +75,14 @@ The recipe sets the location option, which can be read by other
 recipes, to the location where the part is installed:
 
     >>> cat('.installed.cfg')
-    ... # doctest: +ELLIPSIS
     [buildout]
-    installed_develop_eggs = 
+    installed_develop_eggs =
     parts = foo
     <BLANKLINE>
     [foo]
-    __buildout_installed__ = /sample_buildout/parts/foo
-    ...
-    extra_options = -a -b c
+	...
     location = /sample_buildout/parts/foo
-    ...
+	...
 
 It may be necessary to set some environment variables when running configure
 or make. This can be done by adding an environment statement:
@@ -103,7 +100,7 @@ or make. This can be done by adding an environment statement:
     ... """ % distros_url)
 
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Uninstalling foo.
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
@@ -128,8 +125,8 @@ First of all let's write a patchfile:
     ... @@ -1,13 +1,13 @@
     ...  #!%s
     ...  import sys
-    ... -print "configuring foo", ' '.join(sys.argv[1:])
-    ... +print "configuring foo patched", ' '.join(sys.argv[1:])
+    ... -print("configuring foo " + ' '.join(sys.argv[1:]))
+    ... +print("configuring foo patched " + ' '.join(sys.argv[1:]))
     ...
     ...  Makefile_template = '''
     ...  all:
@@ -141,7 +138,8 @@ First of all let's write a patchfile:
     ... +\techo installing foo patched
     ...  '''
     ...
-    ...  open('Makefile', 'w').write(Makefile_template)
+    ...  with open('Makefile', 'w') as f:
+    ...      _ = f.write(Makefile_template)
     ...
     ... """ % sys.executable)
 
@@ -160,12 +158,13 @@ passed, -p0 is appended by default.
     ... patch_options = -p0
     ... """ % distros_url)
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Uninstalling foo.
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     patching file configure
+    ...
     configuring foo patched --prefix=/sample_buildout/parts/foo
     echo building foo patched
     building foo patched
@@ -185,7 +184,7 @@ It is possible to autogenerate the configure files:
     ... autogen = autogen.sh
     ... """ % distros_url)
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Uninstalling foo.
     Installing foo.
     foo: Downloading http://localhost//bar.tgz
@@ -213,7 +212,7 @@ It is also possible to support configure commands other than "./configure":
     ...     --bindir=bin
     ... """ % distros_url)
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Uninstalling foo.
     Installing foo.
     foo: Downloading http://localhost//baz.tgz
@@ -243,7 +242,7 @@ matches, we'll not be bothered with the check by buildout's output:
     ... md5sum = %s
     ... """ % (distros_url, foo_md5sum))
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Uninstalling foo.
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
@@ -268,7 +267,7 @@ But if the archive doesn't match the checksum, the recipe refuses to install:
     ... patch = ${buildout:directory}/patches/config.patch
     ... """ % (distros_url, foo_md5sum))
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Uninstalling foo.
     Installing foo.
     foo: Downloading http://localhost:20617/bar.tgz
@@ -291,7 +290,7 @@ aborted:
     ... patch-md5sum = %s
     ... """ % (distros_url, foo_md5sum))
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout').strip())
     Installing foo.
     foo: Downloading http://localhost:21669/foo.tgz
     foo: Unpacking and configuring
@@ -316,7 +315,7 @@ is logged to stdout, and left intact for debugging purposes.
     >>> write('patches/config.patch', "dgdgdfgdfg")
 
     >>> res =  system('bin/buildout')
-    >>> print res
+    >>> print(res)
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
@@ -329,7 +328,7 @@ is logged to stdout, and left intact for debugging purposes.
     An internal error occurred due to a bug in either zc.buildout or in a
     recipe being used:
     ...
-    SystemError: ('Failed', 'patch -p0 < /.../patches/config.patch')
+    CalledProcessError: Command 'patch -p0 < ...' returned non-zero exit status ...
     <BLANKLINE>
 
     >>> import re
@@ -358,7 +357,7 @@ After a successful build, such temporary directories are removed.
     ... url = %sfoo.tgz
     ... """ % (distros_url,))
 
-    >>> print system("bin/buildout")
+    >>> print(system("bin/buildout"))
     Installing foo.
     foo: Downloading http://localhost:21445/foo.tgz
     foo: Unpacking and configuring

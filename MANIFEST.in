@@ -1,0 +1,9 @@
+include *.rst
+include *.txt
+include buildout.cfg
+include .travis.yml
+include tox.ini
+include .coveragerc
+include test_all_pythons.cfg
+recursive-include src *.rst
+recursive-include src *.txt

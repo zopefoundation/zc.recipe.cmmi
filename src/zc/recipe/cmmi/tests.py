@@ -12,7 +12,11 @@
 #
 ##############################################################################
 
-import os, re, StringIO, sys, tarfile
+import os
+import re
+import StringIO
+import sys
+import tarfile
 import zc.buildout.testing
 
 import unittest
@@ -27,33 +31,34 @@ def setUp(test):
     distros = test.globs['distros'] = test.globs['tmpdir']('distros')
 
     tarpath = os.path.join(distros, 'foo.tgz')
-    tar = tarfile.open(tarpath, 'w:gz')
-    configure = configure_template % sys.executable
-    info = tarfile.TarInfo('configure')
-    info.size = len(configure)
-    info.mode = 0755
-    tar.addfile(info, StringIO.StringIO(configure))
+    with tarfile.open(tarpath, 'w:gz') as tar:
+        configure = configure_template % sys.executable
+        info = tarfile.TarInfo('configure')
+        info.size = len(configure)
+        info.mode = 0o755
+        tar.addfile(info, StringIO.StringIO(configure))
 
     tarpath = os.path.join(distros, 'bar.tgz')
-    tar = tarfile.open(tarpath, 'w:gz')
-    configure = configure_template % sys.executable
-    info = tarfile.TarInfo('configure.in')
-    info.size = len(configure)
-    info.mode = 0755
-    tar.addfile(info, StringIO.StringIO(configure))
-    autogen = autogen_template
-    info = tarfile.TarInfo('autogen.sh')
-    info.size = len(autogen)
-    info.mode = 0755
-    tar.addfile(info, StringIO.StringIO(autogen))
+    with tarfile.open(tarpath, 'w:gz') as tar:
+        configure = configure_template % sys.executable
+        info = tarfile.TarInfo('configure.in')
+        info.size = len(configure)
+        info.mode = 0o755
+        tar.addfile(info, StringIO.StringIO(configure))
+
+        autogen = autogen_template
+        info = tarfile.TarInfo('autogen.sh')
+        info.size = len(autogen)
+        info.mode = 0o755
+        tar.addfile(info, StringIO.StringIO(autogen))
 
     tarpath = os.path.join(distros, 'baz.tgz')
-    tar = tarfile.open(tarpath, 'w:gz')
-    configure = configure_template % sys.executable
-    info = tarfile.TarInfo('configure.py')
-    info.size = len(configure)
-    info.mode = 0755
-    tar.addfile(info, StringIO.StringIO(configure))
+    with tarfile.open(tarpath, 'w:gz') as tar:
+        configure = configure_template % sys.executable
+        info = tarfile.TarInfo('configure.py')
+        info.size = len(configure)
+        info.mode = 0o755
+        tar.addfile(info, StringIO.StringIO(configure))
 
 def add(tar, name, src, mode=None):
     info.size = len(src)
@@ -63,7 +68,7 @@ def add(tar, name, src, mode=None):
 
 configure_template = """#!%s
 import sys
-print "configuring foo", ' '.join(sys.argv[1:])
+print("configuring foo " + ' '.join(sys.argv[1:]))
 
 Makefile_template = '''
 all:
@@ -85,23 +90,23 @@ mv configure.in configure
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
-            'README.txt',
+            'README.rst',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
-                (re.compile('--prefix=\S+sample-buildout'),
+                (re.compile(r'--prefix=\S+sample-buildout'),
                  '--prefix=/sample_buildout'),
-                (re.compile(' = \S+sample-buildout'),
+                (re.compile(r' = \S+sample-buildout'),
                  ' = /sample_buildout'),
                 (re.compile('http://localhost:[0-9]{4,5}/'),
                  'http://localhost/'),
                 (re.compile('occured'), 'occurred'),
                ]),
-            optionflags = doctest.ELLIPSIS
-            ),
+            optionflags=(doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
+           ),
         doctest.DocFileSuite(
-            'downloadcache.txt',
-            'patching.txt',
-            'shared.txt',
+            'downloadcache.rst',
+            'patching.rst',
+            'shared.rst',
             setUp=setUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
 
@@ -115,19 +120,19 @@ def test_suite():
                 (re.compile('extdemo[.]pyd'), 'extdemo.so'),
                 (re.compile('[0-9a-f]{40}'), '<BUILDID>'),
                 ]),
-            optionflags = doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
+            optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
             ),
         doctest.DocFileSuite(
-            'misc.txt',
+            'misc.rst',
             setUp=setUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
 
             checker=renormalizing.RENormalizing([
-                (re.compile('--prefix=\S+sample-buildout'),
+                (re.compile(r'--prefix=\S+sample-buildout'),
                  '--prefix=/sample_buildout'),
                 (re.compile('http://localhost:[0-9]{4,5}/'),
                  'http://localhost/'),
                 ]),
-            optionflags = doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
+            optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
             ),
         ))
