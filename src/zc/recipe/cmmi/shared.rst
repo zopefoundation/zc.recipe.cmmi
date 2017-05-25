@@ -53,8 +53,8 @@ For example, if the download url changes, the build is executed again:
 
     >>> import os
     >>> import shutil
-    >>> shutil.copy(os.path.join(distros, 'foo.tgz'),
-    ...             os.path.join(distros, 'qux.tgz'))
+    >>> _ = shutil.copy(os.path.join(distros, 'foo.tgz'),
+    ...                 os.path.join(distros, 'qux.tgz'))
 
     >>> remove('.installed.cfg')
     >>> write('buildout.cfg',
@@ -149,13 +149,13 @@ mistaking some half-baked build directory as a good cached shared build.
 
 Let's simulate a build error. First, we backup a working build.
 
-    >>> shutil.copy(os.path.join(distros, 'foo.tgz'),
-    ...             os.path.join(distros, 'foo.tgz.bak'))
+    >>> _ = shutil.copy(os.path.join(distros, 'foo.tgz'),
+    ...                 os.path.join(distros, 'foo.tgz.bak'))
 
 Then we create a broken tarball:
 
     >>> import tarfile
-    >>> import StringIO
+    >>> from zc.recipe.cmmi.tests import BytesIO
     >>> import sys
     >>> tarpath = os.path.join(distros, 'foo.tgz')
     >>> with tarfile.open(tarpath, 'w:gz') as tar:
@@ -163,7 +163,7 @@ Then we create a broken tarball:
     ...    info = tarfile.TarInfo('configure.off')
     ...    info.size = len(configure)
     ...    info.mode = 0o755
-    ...    tar.addfile(info, StringIO.StringIO(configure))
+    ...    tar.addfile(info, BytesIO(configure))
 
 Now we reset the cache to force our broken tarball to be used:
 
@@ -183,7 +183,7 @@ Now we reset the cache to force our broken tarball to be used:
 
     >>> remove('.installed.cfg')
     >>> res = system('bin/buildout')
-    >>> print res
+    >>> print(res)
     Installing foo.
     ...
     ValueError: Couldn't find configure
@@ -198,8 +198,8 @@ When we now fix the error (by copying back the working version and resetting the
 cache), the build will be run again, and we don't use a half-baked shared
 directory:
 
-    >>> shutil.copy(os.path.join(distros, 'foo.tgz.bak'),
-    ...             os.path.join(distros, 'foo.tgz'))
+    >>> _ = shutil.copy(os.path.join(distros, 'foo.tgz.bak'),
+    ...                 os.path.join(distros, 'foo.tgz'))
     >>> shutil.rmtree(cache)
     >>> cache = tmpdir('cache')
     >>> write('buildout.cfg',

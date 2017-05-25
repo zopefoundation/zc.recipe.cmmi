@@ -42,7 +42,7 @@ We used the url option to specify the location of the archive.
 
 It creates a make file which is also run:
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     In...
     ...
     Installing foo.
@@ -82,7 +82,7 @@ files are not downloaded afresh:
     ...             remove("parts", f)
     >>> remove_parts()
 
-    >>> print system(buildout)
+    >>> print(system(buildout))
     In...
     ...
     Uninstalling foo.
@@ -107,7 +107,7 @@ are also removed, then it is downloaded afresh:
 
     >>> remove_parts()
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     In...
     ...
     Installing foo.
@@ -139,7 +139,7 @@ the new cache is created and repopulated:
     ... url = %s/foo.tgz
     ... """ % (cache2, distros))
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     In...
     ...
     Installing foo.
@@ -188,7 +188,7 @@ been removed, the files from the cache are used:
 
     >>> remove_parts()
 
-    >>> print system(buildout)
+    >>> print(system(buildout))
     In...
     ...
     Uninstalling foo.
@@ -211,7 +211,7 @@ the cache, an error is raised because the file is not in the cache:
 
     >>> remove_parts()
 
-    >>> print system(buildout)
+    >>> print(system(buildout))
     In...
     ...
     Uninstalling foo.
@@ -222,4 +222,3 @@ the cache, an error is raised because the file is not in the cache:
       Installing foo.
     Error: Couldn't download 'http://localhost//foo.tgz' in offline mode.
     <BLANKLINE>
-

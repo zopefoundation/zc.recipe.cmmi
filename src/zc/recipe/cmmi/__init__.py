@@ -110,7 +110,10 @@ class Recipe(object):
                        in sorted(self.environ.items())])
         state = [self.url, self.extra_options, self.autogen,
                  self.patch, self.patch_options, env]
-        return sha1(''.join(state)).hexdigest()
+        data = ''.join(state)
+        if not isinstance(data, bytes):
+            data = data.encode('utf-8')
+        return sha1(data).hexdigest()
 
     def install(self):
         self.build()

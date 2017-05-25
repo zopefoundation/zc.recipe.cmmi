@@ -227,9 +227,9 @@ When downloading a source archive or a patch, we can optionally make sure of
 its authenticity by supplying an MD5 checksum that must be matched. If it
 matches, we'll not be bothered with the check by buildout's output:
 
-    >>> try: from hashlib import md5
-    ... except ImportError: from md5 import new as md5
-    >>> foo_md5sum = md5(open(join(distros, 'foo.tgz')).read()).hexdigest()
+    >>> from hashlib import md5
+    >>> with open(join(distros, 'foo.tgz'), 'rb') as f:
+    ...     foo_md5sum = md5(f.read()).hexdigest()
 
     >>> write('buildout.cfg',
     ... """
@@ -344,8 +344,9 @@ After a successful build, such temporary directories are removed.
     >>> import glob
     >>> import tempfile
 
-    >>> tempdir = tempfile.gettempdir()
-    >>> dirs = len(glob.glob(os.path.join(tempdir, '*buildout-foo')))
+    >>> old_tempdir = tempfile.gettempdir()
+    >>> tempdir = tempfile.tempdir = tempfile.mkdtemp(suffix='.buildout.build')
+    >>> dirs = glob.glob(os.path.join(tempdir, '*buildout-foo'))
 
     >>> write('buildout.cfg',
     ... """
@@ -368,6 +369,7 @@ After a successful build, such temporary directories are removed.
     installing foo
     <BLANKLINE>
 
-    >>> new_dirs = len(glob.glob(os.path.join(tempdir, '*buildout-foo')))
-    >>> dirs == new_dirs
+    >>> new_dirs = glob.glob(os.path.join(tempdir, '*buildout-foo'))
+    >>> len(dirs) == len(new_dirs) == 0
     True
+    >>> tempfile.tempdir = old_tempdir
