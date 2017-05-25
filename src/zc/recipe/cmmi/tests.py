@@ -32,9 +32,30 @@ def BytesIO(s):
     return _BytesIO(_as_bytes(s))
 
 def setUp(test):
+    path_to_coveragerc = None
+    if os.getenv("COVERAGE_PROCESS_START"):
+        path_to_coveragerc = os.path.abspath(os.environ['COVERAGE_PROCESS_START'])
+
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.cmmi', test)
     distros = test.globs['distros'] = test.globs['tmpdir']('distros')
+
+
+    if path_to_coveragerc:
+        # Add the code to start coverage in the subprocess. Since we
+        # will be working in a changed directory, we need to make the
+        # coverage config absolute first.
+        assert os.path.isfile(path_to_coveragerc), path_to_coveragerc
+        os.environ['COVERAGE_PROCESS_START'] = path_to_coveragerc
+        test.globs['_path_to_coveragerc'] = path_to_coveragerc
+
+        with open('bin/buildout') as f:
+            lines = f.read().splitlines()
+            assert lines[1] == '', lines
+            lines[1] = 'import coverage; coverage.process_startup()'
+        with open('bin/buildout', 'w') as f:
+            f.write('\n'.join(lines))
+
 
     tarpath = os.path.join(distros, 'foo.tgz')
     with tarfile.open(tarpath, 'w:gz') as tar:
@@ -65,6 +86,16 @@ def setUp(test):
         info.size = len(configure)
         info.mode = 0o755
         tar.addfile(info, BytesIO(configure))
+
+def tearDown(test):
+    if test.globs.get('_path_to_coveragerc'):
+        coveragedir = os.path.dirname(test.globs['_path_to_coveragerc'])
+        import glob
+        import shutil
+        for f in glob.glob('.coverage*'):
+            shutil.copy(f, coveragedir)
+    zc.buildout.testing.buildoutTearDown(test)
+
 
 def add(tar, name, src, mode=None):
     info.size = len(src)
@@ -97,7 +128,7 @@ def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
             'README.rst',
-            setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
+            setUp=setUp, tearDown=tearDown,
             checker=renormalizing.RENormalizing([
                 (re.compile(r'--prefix=\S+sample-buildout'),
                  '--prefix=/sample_buildout'),
@@ -109,7 +140,7 @@ def test_suite():
                 # Buildout or setuptools has a bug not closing .egg-link files,
                 # leading to issues being reported by PyPy, which naturally mess up
                 # doctests.
-                (re.compile('Exception IOError: IOError.*finalizer of closed file.*'),
+                (re.compile('Exception IOError: IOError.*finalizer of <closed file.*'),
                 ''),
                 # IGNORE_EXCEPTION_MODULE_IN_PYTHON2 fails because the output doesn't
                 # always look like a traceback.
@@ -124,7 +155,7 @@ def test_suite():
             'patching.rst',
             'shared.rst',
             setUp=setUp,
-            tearDown=zc.buildout.testing.buildoutTearDown,
+            tearDown=tearDown,
 
             checker=renormalizing.RENormalizing([
                 zc.buildout.testing.normalize_path,
@@ -135,13 +166,18 @@ def test_suite():
                  'http://localhost/'),
                 (re.compile('extdemo[.]pyd'), 'extdemo.so'),
                 (re.compile('[0-9a-f]{40}'), '<BUILDID>'),
-                ]),
+                # Buildout or setuptools has a bug not closing .egg-link files,
+                # leading to issues being reported by PyPy, which naturally mess up
+                # doctests.
+                (re.compile('Exception IOError: IOError.*finalizer of <closed file.*'),
+                ''),
+            ]),
             optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
         ),
         doctest.DocFileSuite(
             'misc.rst',
             setUp=setUp,
-            tearDown=zc.buildout.testing.buildoutTearDown,
+            tearDown=tearDown,
 
             checker=renormalizing.RENormalizing([
                 (re.compile(r'--prefix=\S+sample-buildout'),

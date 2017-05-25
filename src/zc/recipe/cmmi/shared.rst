@@ -249,7 +249,7 @@ If someone deletes this shared build, updating the buildout part that needs it
 will cause it to be rebuilt:
 
     >>> rmdir(cache, 'cmmi', 'build')
-    >>> print(system('bin/buildout'))
+    >>> print(system('bin/buildout').strip())
     Updating foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
@@ -274,7 +274,7 @@ If we stop using the shared build, it stays in the build cache:
     ... url = file://%s/foo.tgz
     ... """ % (cache, distros))
 
-    >>> print(system('bin/buildout'))
+    >>> print(system('bin/buildout').strip())
     Uninstalling foo.
     Installing foo.
     foo: Unpacking and configuring

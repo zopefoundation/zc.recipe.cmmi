@@ -1,5 +1,6 @@
 [run]
-source = src
+source = zc.recipe.cmmi
+parallel = true
 
 [report]
 exclude_lines =

@@ -30,9 +30,6 @@ not_starting_with_digit = re.compile(r'\D').match
 
 def system(c):
     subprocess.check_call(c, shell=True)
-    # if os.system(c):
-    #     raise SystemError("Failed", c)
-
 
 class Recipe(object):
 
@@ -105,7 +102,6 @@ class Recipe(object):
         # ./configure options will get a different build directory.
         # Be sure to sort to keep a consistent order, since dictionary iteration order
         # is never guaranteed.
-        # XXX: This doesn't actually fix it.
         env = ''.join(['%s%s' % (key, value) for key, value
                        in sorted(self.environ.items())])
         state = [self.url, self.extra_options, self.autogen,
