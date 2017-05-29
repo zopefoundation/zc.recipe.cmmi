@@ -19,7 +19,8 @@ def read(*rnames):
     with open(os.path.join(os.path.dirname(__file__), *rnames)) as f:
         return f.read()
 
-name="zc.recipe.cmmi"
+name = "zc.recipe.cmmi"
+
 setup(
     name=name,
     version='2.0.dev0',
@@ -65,7 +66,7 @@ setup(
         'Download\n'
         '**********************\n'
     ),
-    package_dir={'':'src'},
+    package_dir={'': 'src'},
     packages=find_packages('src'),
     include_package_data=True,
     namespace_packages=['zc', 'zc.recipe'],
@@ -74,10 +75,10 @@ setup(
         'setuptools'],
     extras_require={
         'test': [
-            # sadly zc.buildout doesn't have a test extra, so we
-            # need to duplicate its test dependencies, since we import its
-            # test package.
-            'zc.buildout[test]',
+            # we import zc.buildout's 'test' package. It does have a
+            # 'test' extra, but we really don't want all the things
+            # that drags in, so we just list what's necessary for our
+            # own tests to run.
             'manuel',
             'zope.testing',
             'zope.testrunner',
