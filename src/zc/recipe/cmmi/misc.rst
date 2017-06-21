@@ -9,7 +9,7 @@ Creating the location folder
 When the recipe is subclassed, the `location` folder might be created
 before `zc.recipe.cmmi` has a chance to create it, so we need to make
 sure it checks that the folder does not exists before it is created.
-   
+
 In the test below, the `foo` folder is created before the recipe
 is launched::
 
@@ -27,7 +27,7 @@ is launched::
     ... url = file://%s/foo.tgz
     ... """ % (distros))
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing...
     ...
     installing foo
@@ -50,7 +50,7 @@ The part's directory is created when the part is installed:
     >>> remove('.installed.cfg')
     >>> rmdir('parts', 'foo')
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Installing...
     ...
     installing foo
@@ -64,10 +64,10 @@ part now uses a shared build or because the part is gone altogether):
     >>> write('buildout.cfg',
     ... """
     ... [buildout]
-    ... parts = 
+    ... parts =
     ... """)
 
-    >>> print system('bin/buildout')
+    >>> print(system('bin/buildout'))
     Uninstalling foo.
 
     >>> os.path.isdir(join(sample_buildout, "parts", "foo"))
@@ -95,7 +95,7 @@ aren't of the form NAME=.....
     ...   CFLAGS=-I/yyy -I/xxx --x=y 2=1+1 a=b
     ... """ % distros_url)
 
-    >>> print system('bin/buildout'),
+    >>> print(system('bin/buildout'))
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
