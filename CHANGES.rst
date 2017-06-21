@@ -1,5 +1,6 @@
-Release History
-***************
+=================
+ Release History
+=================
 
 2.0.0 (unreleased)
 ==================
@@ -91,15 +92,12 @@ Removed deprecations under Python 2.6.
 1.1.5 (2008-11-07)
 ==================
 
-Added to the README.txt file a link to the SVN repository, so that Setuptools
-can automatically find the development version when asked to install the
-"-dev" version of zc.recipe.cmmi.
+- Added to the README.txt file a link to the SVN repository, so that Setuptools
+  can automatically find the development version when asked to install the
+  "-dev" version of zc.recipe.cmmi.
 
-Bugs Fixed
-----------
-
-Applied fix for bug #261367 i.e. changed open() of file being downloaded to
-binary, so that errors like the following no longer occur under Windows.
+- Applied fix for bug #261367 i.e. changed open() of file being downloaded to
+  binary, so that errors like the following no longer occur under Windows.
 
   uncompress = self.decompress.decompress(buf)
   error: Error -3 while decompressing: invalid distance too far back
@@ -117,10 +115,7 @@ Add support for updating the environment.
 1.1.2 (2008-02-28)
 ==================
 
-Bugs Fixed
-----------
-
-Check if the `location` folder exists before creating it.
+- Check if the ``location`` folder exists before creating it.
 
 After 1.1.0
 ===========
@@ -146,20 +141,14 @@ Added support for:
 1.0.2 (2007-06-03)
 ==================
 
-Added support for patches.
+- Added support for patches.
 
-Bugs Fixed
-----------
-
-Tests fixed (buildout's output changed)
+- Tests fixed (buildout's output changed)
 
 1.0.1 (2006-11-22)
 ==================
 
-Bugs Fixed
-----------
-
-Added missing zip_safe flag.
+- Added missing zip_safe flag.
 
 1.0 (2006-11-22)
 ================

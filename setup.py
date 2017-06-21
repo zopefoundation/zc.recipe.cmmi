@@ -53,18 +53,18 @@ setup(
         + '\n' +
         read('CHANGES.rst')
         + '\n' +
+        '======================\n'
         'Detailed Documentation\n'
-        '**********************\n'
+        '======================\n'
         + '\n' +
         read('src', 'zc', 'recipe', 'cmmi', 'README.rst')
         + '\n' +
+        '==============\n'
         'Download Cache\n'
-        '**************\n'
+        '==============\n'
         'The recipe supports use of a download cache in the same way\n'
         'as zc.buildout. See downloadcache.txt for details\n'
-        + '\n' +
-        'Download\n'
-        '**********************\n'
+        + '\n'
     ),
     package_dir={'': 'src'},
     packages=find_packages('src'),
