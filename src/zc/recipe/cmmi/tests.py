@@ -32,30 +32,9 @@ def BytesIO(s):
     return _BytesIO(_as_bytes(s))
 
 def setUp(test):
-    path_to_coveragerc = None
-    if os.getenv("COVERAGE_PROCESS_START"):
-        path_to_coveragerc = os.path.abspath(os.environ['COVERAGE_PROCESS_START'])
-
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.cmmi', test)
     distros = test.globs['distros'] = test.globs['tmpdir']('distros')
-
-
-    if path_to_coveragerc:
-        # Add the code to start coverage in the subprocess. Since we
-        # will be working in a changed directory, we need to make the
-        # coverage config absolute first.
-        assert os.path.isfile(path_to_coveragerc), path_to_coveragerc
-        os.environ['COVERAGE_PROCESS_START'] = path_to_coveragerc
-        test.globs['_path_to_coveragerc'] = path_to_coveragerc
-
-        with open('bin/buildout') as f:
-            lines = f.read().splitlines()
-            assert lines[1] == '', lines
-            lines[1] = 'import coverage; coverage.process_startup()'
-        with open('bin/buildout', 'w') as f:
-            f.write('\n'.join(lines))
-
 
     tarpath = os.path.join(distros, 'foo.tgz')
     with tarfile.open(tarpath, 'w:gz') as tar:
@@ -88,12 +67,6 @@ def setUp(test):
         tar.addfile(info, BytesIO(configure))
 
 def tearDown(test):
-    if test.globs.get('_path_to_coveragerc'):
-        coveragedir = os.path.dirname(test.globs['_path_to_coveragerc'])
-        import glob
-        import shutil
-        for f in glob.glob('.coverage*'):
-            shutil.copy(f, coveragedir)
     zc.buildout.testing.buildoutTearDown(test)
 
 

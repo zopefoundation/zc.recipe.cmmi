@@ -71,7 +71,7 @@ setup(
     include_package_data=True,
     namespace_packages=['zc', 'zc.recipe'],
     install_requires=[
-        'zc.buildout >= 1.4',
+        'zc.buildout >= 2.9.4',
         'setuptools'],
     extras_require={
         'test': [
