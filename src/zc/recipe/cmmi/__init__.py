@@ -28,8 +28,10 @@ import zc.buildout.download
 almost_environment_setting = re.compile(r'\w+=').match
 not_starting_with_digit = re.compile(r'\D').match
 
+
 def system(c):
     subprocess.check_call(c, shell=True)
+
 
 class Recipe(object):
 
@@ -52,7 +54,7 @@ class Recipe(object):
         environ = []
         for token in self.options.get('environment', '').split():
             if (almost_environment_setting(token) and
-                not_starting_with_digit(token)):
+                    not_starting_with_digit(token)):
                 environ.append(token)
             else:
                 if environ:
@@ -93,15 +95,15 @@ class Recipe(object):
             location = self.shared
         else:
             location = os.path.join(options.get(
-                    'location', buildout['buildout']['parts-directory']), name)
+                'location', buildout['buildout']['parts-directory']), name)
 
         options['location'] = location
 
     def _state_hash(self):
         # hash of our configuration state, so that e.g. different
         # ./configure options will get a different build directory.
-        # Be sure to sort to keep a consistent order, since dictionary iteration order
-        # is never guaranteed.
+        # Be sure to sort to keep a consistent order, since dictionary
+        # iteration order is never guaranteed.
         env = ''.join(['%s%s' % (key, value) for key, value
                        in sorted(self.environ.items())])
         state = [self.url, self.extra_options, self.autogen,
@@ -174,7 +176,7 @@ class Recipe(object):
                             self.patch, is_temp = download(
                                 self.patch,
                                 md5sum=self.options.get('patch-md5sum'))
-                        except:
+                        except Exception:
                             # If download/checksum of the patch fails, leaving
                             # the tmp dir won't be helpful.
                             shutil.rmtree(tmp)
@@ -198,7 +200,7 @@ class Recipe(object):
                 shutil.rmtree(tmp)
             finally:
                 os.chdir(here)
-        except:
+        except Exception:
             shutil.rmtree(dest)
             if os.path.exists(tmp):
                 logger.error("cmmi failed: %s", tmp)

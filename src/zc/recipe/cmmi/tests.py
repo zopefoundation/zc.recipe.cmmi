@@ -22,14 +22,16 @@ import zc.buildout.testing
 import unittest
 import doctest
 from zope.testing import renormalizing
-from zc.buildout.tests import easy_install_SetUp
 from zc.buildout.tests import normalize_bang
+
 
 def _as_bytes(s):
     return s.encode('utf-8') if not isinstance(s, bytes) else s
 
+
 def BytesIO(s):
     return _BytesIO(_as_bytes(s))
+
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
@@ -66,15 +68,10 @@ def setUp(test):
         info.mode = 0o755
         tar.addfile(info, BytesIO(configure))
 
+
 def tearDown(test):
     zc.buildout.testing.buildoutTearDown(test)
 
-
-def add(tar, name, src, mode=None):
-    info.size = len(src)
-    if mode is not None:
-        info.mode = mode
-    tar.addfile(info, BytesIO(src))
 
 configure_template = """#!%s
 import sys
@@ -111,14 +108,16 @@ def test_suite():
                  'http://localhost/'),
                 (re.compile('occured'), 'occurred'),
                 # Buildout or setuptools has a bug not closing .egg-link files,
-                # leading to issues being reported by PyPy, which naturally mess up
-                # doctests.
-                (re.compile('Exception IOError: IOError.*finalizer of <closed file.*'),
-                ''),
-                # IGNORE_EXCEPTION_MODULE_IN_PYTHON2 fails because the output doesn't
-                # always look like a traceback.
-                (re.compile('subprocess.CalledProcessError'), 'CalledProcessError'),
-               ]),
+                # leading to issues being reported by PyPy, which naturally
+                # mess up doctests.
+                (re.compile(
+                    'Exception IOError: IOError.*finalizer of <closed file.*'),
+                 ''),
+                # IGNORE_EXCEPTION_MODULE_IN_PYTHON2 fails because the output
+                # doesn't always look like a traceback.
+                (re.compile('subprocess.CalledProcessError'),
+                 'CalledProcessError'),
+            ]),
             optionflags=(doctest.ELLIPSIS
                          | doctest.NORMALIZE_WHITESPACE
                          | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2)
@@ -140,12 +139,13 @@ def test_suite():
                 (re.compile('extdemo[.]pyd'), 'extdemo.so'),
                 (re.compile('[0-9a-f]{40}'), '<BUILDID>'),
                 # Buildout or setuptools has a bug not closing .egg-link files,
-                # leading to issues being reported by PyPy, which naturally mess up
-                # doctests.
-                (re.compile('Exception IOError: IOError.*finalizer of <closed file.*'),
-                ''),
+                # leading to issues being reported by PyPy, which naturally
+                # mess up doctests.
+                (re.compile(
+                    'Exception IOError: IOError.*finalizer of <closed file.*'),
+                 ''),
             ]),
-            optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
+            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
         ),
         doctest.DocFileSuite(
             'misc.rst',
@@ -157,7 +157,7 @@ def test_suite():
                  '--prefix=/sample_buildout'),
                 (re.compile('http://localhost:[0-9]{4,5}/'),
                  'http://localhost/'),
-                ]),
-            optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
+            ]),
+            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
         ),
     ))
