@@ -176,7 +176,7 @@ class Recipe(object):
                             self.patch, is_temp = download(
                                 self.patch,
                                 md5sum=self.options.get('patch-md5sum'))
-                        except Exception:
+                        except BaseException:
                             # If download/checksum of the patch fails, leaving
                             # the tmp dir won't be helpful.
                             shutil.rmtree(tmp)
@@ -200,7 +200,7 @@ class Recipe(object):
                 shutil.rmtree(tmp)
             finally:
                 os.chdir(here)
-        except Exception:
+        except BaseException:
             shutil.rmtree(dest)
             if os.path.exists(tmp):
                 logger.error("cmmi failed: %s", tmp)
