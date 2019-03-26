@@ -2,8 +2,12 @@
  Release History
 =================
 
-2.0.1 (unreleased)
-==================
+3.0 (unreleased)
+================
+
+- Drop support for Python 3.4.
+
+- Add support for Python 3.7 and 3.8a2.
 
 - Flake8 the code.
 
