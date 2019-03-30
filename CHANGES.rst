@@ -2,8 +2,8 @@
  Release History
 =================
 
-3.0 (unreleased)
-================
+3.0.0 (2019-03-30)
+==================
 
 - Drop support for Python 3.4.
 
