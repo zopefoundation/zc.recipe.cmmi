@@ -25,7 +25,7 @@ name = "zc.recipe.cmmi"
 
 setup(
     name=name,
-    version='3.0.0',
+    version='3.1.0.dev0',
     author="Jim Fulton",
     author_email="jim@zope.com",
     description="ZC Buildout recipe for configure/make/make install",
