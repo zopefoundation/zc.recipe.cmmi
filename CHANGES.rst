@@ -5,7 +5,7 @@
 3.1.0 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Add support for Python 3.9.
 
 
 3.0.0 (2019-03-30)
