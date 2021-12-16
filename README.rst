@@ -24,6 +24,11 @@ configure-options
 
    Defaults to a ``--prefix`` option that points to the part directory.
 
+make-options
+   Basic make options.
+
+   Defaults to ''.
+
 extra_options
    A string of extra options to pass to configure in *addition to* the
    base options.

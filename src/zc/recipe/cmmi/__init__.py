@@ -72,8 +72,11 @@ class Recipe(object):
         self.configure_cmd = self.options.get(
             'configure-command', './configure')
         self.configure_options = self.options.get('configure-options', None)
+        self.make_options = self.options.get('make-options', '')
         if self.configure_options:
             self.configure_options = ' '.join(self.configure_options.split())
+        if self.make_options:
+            self.make_options = ' '.join(self.make_options.split())
 
         self.shared = options.get('shared', None)
         if self.shared:
@@ -222,5 +225,5 @@ class Recipe(object):
         if self.extra_options:
             options += ' %s' % self.extra_options
         system("%s %s" % (self.configure_cmd, options))
-        system("make")
+        system("make %s" % self.make_options)
         system("make install")
