@@ -79,6 +79,7 @@ print("configuring foo " + ' '.join(sys.argv[1:]))
 
 Makefile_template = '''
 all:
+\techo make is called with option $(MAKEFLAGS)
 \techo building foo
 
 install:
