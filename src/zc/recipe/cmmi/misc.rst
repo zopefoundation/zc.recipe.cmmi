@@ -102,6 +102,8 @@ aren't of the form NAME=.....
     foo: Updating environment: CFLAGS=-I/yyy -I/xxx --x=y 2=1+1
     foo: Updating environment: a=b
     configuring foo --prefix=/sample_buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo

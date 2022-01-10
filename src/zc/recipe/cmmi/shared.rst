@@ -24,6 +24,8 @@ When run the first time, the build is executed as usual:
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -72,6 +74,8 @@ For example, if the download url changes, the build is executed again:
     Installing qux.
     qux: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -111,6 +115,8 @@ directory directly (instead of a name computed from to the recipe options):
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /cache/existing/cmmi
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -217,6 +223,8 @@ directory:
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -253,6 +261,8 @@ will cause it to be rebuilt:
     Updating foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -279,6 +289,8 @@ If we stop using the shared build, it stays in the build cache:
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -313,6 +325,8 @@ from the story so far:
     Installing foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -332,6 +346,8 @@ it if it got deleted from the cache. This is how it should work:
     Updating foo.
     foo: Unpacking and configuring
     configuring foo /cache/cmmi/build/<BUILDID>
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo

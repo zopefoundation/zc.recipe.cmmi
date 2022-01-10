@@ -51,6 +51,8 @@ It creates a make file which is also run:
     foo: Downloading http://localhost//foo.tgz
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -91,6 +93,8 @@ files are not downloaded afresh:
     foo: Using cache file /cache/cmmi/...
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -115,6 +119,8 @@ are also removed, then it is downloaded afresh:
     foo: Cache miss; will cache http://localhost//foo.tgz as /cache/cmmi/...
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -147,6 +153,8 @@ the new cache is created and repopulated:
     foo: Cache miss; will cache http://localhost//foo.tgz as /cache2/cmmi/...
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -197,6 +205,8 @@ been removed, the files from the cache are used:
     foo: Using cache file /cache/cmmi/...
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo

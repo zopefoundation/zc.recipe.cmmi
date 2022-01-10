@@ -30,6 +30,8 @@ It creates a make file which is also run:
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     configuring foo --prefix=/sample-buildout/parts/foo
+    echo make is called with option
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -66,11 +68,41 @@ You can supply extra configure options:
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     configuring foo --prefix=/sample-buildout/parts/foo -a -b c
+    echo make is called with option
+    make is called with option
     echo building foo
     building foo
     echo installing foo
     installing foo
 
+
+You can supply extra make options:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = %sfoo.tgz
+    ... extra_options = -a -b c
+    ... make-options = -j2
+    ... """ % distros_url)
+
+    >>> print(system('bin/buildout').strip())
+    Uninstalling foo.
+    Installing foo.
+    foo: Downloading http://localhost/foo.tgz
+    foo: Unpacking and configuring
+    configuring foo --prefix=/sample-buildout/parts/foo -a -b c
+    echo make is called with option  -j2 --jobserver-auth=3,4
+    make is called with option -j2 --jobserver-auth=3,4
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+    
 The recipe sets the location option, which can be read by other
 recipes, to the location where the part is installed:
 
@@ -107,6 +139,8 @@ or make. This can be done by adding an environment statement:
     foo: Unpacking and configuring
     foo: Updating environment: CFLAGS=-I/usr/lib/postgresql7.4/include
     configuring foo --prefix=/sample_buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -185,12 +219,13 @@ It is possible to autogenerate the configure files:
     ... """ % distros_url)
 
     >>> print(system('bin/buildout').strip())
-    Uninstalling foo.
     Installing foo.
     foo: Downloading http://localhost//bar.tgz
     foo: Unpacking and configuring
     foo: auto generating configure files
     configuring foo --prefix=/sample_buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -218,6 +253,8 @@ It is also possible to support configure commands other than "./configure":
     foo: Downloading http://localhost//baz.tgz
     foo: Unpacking and configuring
     configuring foo --bindir=bin
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -248,6 +285,8 @@ matches, we'll not be bothered with the check by buildout's output:
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     configuring foo --prefix=/sample_buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo
@@ -363,6 +402,8 @@ After a successful build, such temporary directories are removed.
     foo: Downloading http://localhost:21445/foo.tgz
     foo: Unpacking and configuring
     configuring foo --prefix=/sample_buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo
     building foo
     echo installing foo

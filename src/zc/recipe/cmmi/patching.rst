@@ -68,6 +68,8 @@ Now let's create a buildout.cfg file.
     patching file configure
     ...
     configuring foo patched /sample-buildout/parts/foo
+    echo make is called with option 
+    make is called with option
     echo building foo patched
     building foo patched
     echo installing foo patched
