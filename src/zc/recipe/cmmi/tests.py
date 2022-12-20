@@ -113,14 +113,9 @@ def test_suite():
                 (re.compile(
                     'Exception IOError: IOError.*finalizer of <closed file.*'),
                  ''),
-                # IGNORE_EXCEPTION_MODULE_IN_PYTHON2 fails because the output
-                # doesn't always look like a traceback.
-                (re.compile('subprocess.CalledProcessError'),
-                 'CalledProcessError'),
             ]),
             optionflags=(doctest.ELLIPSIS
-                         | doctest.NORMALIZE_WHITESPACE
-                         | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2)
+                         | doctest.NORMALIZE_WHITESPACE)
         ),
         doctest.DocFileSuite(
             'downloadcache.rst',
