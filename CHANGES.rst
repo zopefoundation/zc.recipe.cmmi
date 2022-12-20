@@ -2,8 +2,8 @@
  Release History
 =================
 
-3.1.0 (unreleased)
-==================
+4.0 (unreleased)
+================
 
 - Add support for Python 3.9.
 
