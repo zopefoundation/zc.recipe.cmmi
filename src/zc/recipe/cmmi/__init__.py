@@ -13,17 +13,19 @@
 ##############################################################################
 
 
-from hashlib import sha1
 import logging
 import os
 import os.path
 import re
-import subprocess
-import setuptools.archive_util
 import shutil
+import subprocess
 import tempfile
+from hashlib import sha1
+
+import setuptools.archive_util
 import zc.buildout
 import zc.buildout.download
+
 
 almost_environment_setting = re.compile(r'\w+=').match
 not_starting_with_digit = re.compile(r'\D').match
@@ -33,7 +35,7 @@ def system(c):
     subprocess.check_call(c, shell=True)
 
 
-class Recipe(object):
+class Recipe:
 
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
@@ -104,7 +106,7 @@ class Recipe(object):
         # ./configure options will get a different build directory.
         # Be sure to sort to keep a consistent order, since dictionary
         # iteration order is never guaranteed.
-        env = ''.join(['%s%s' % (key, value) for key, value
+        env = ''.join(['{}{}'.format(key, value) for key, value
                        in sorted(self.environ.items())])
         state = [self.url, self.extra_options, self.autogen,
                  self.patch, self.patch_options, env]
@@ -221,6 +223,6 @@ class Recipe(object):
             options = '--prefix="%s"' % dest
         if self.extra_options:
             options += ' %s' % self.extra_options
-        system("%s %s" % (self.configure_cmd, options))
+        system("{} {}".format(self.configure_cmd, options))
         system("make")
         system("make install")
