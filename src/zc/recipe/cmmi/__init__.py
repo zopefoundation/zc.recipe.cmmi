@@ -13,17 +13,19 @@
 ##############################################################################
 
 
-from hashlib import sha1
 import logging
 import os
 import os.path
 import re
-import subprocess
-import setuptools.archive_util
 import shutil
+import subprocess
 import tempfile
+from hashlib import sha1
+
+import setuptools.archive_util
 import zc.buildout
 import zc.buildout.download
+
 
 almost_environment_setting = re.compile(r'\w+=').match
 not_starting_with_digit = re.compile(r'\D').match

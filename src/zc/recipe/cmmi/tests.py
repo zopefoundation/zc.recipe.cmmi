@@ -12,17 +12,17 @@
 #
 ##############################################################################
 
+import doctest
 import os
 import re
-from io import BytesIO as _BytesIO
 import sys
 import tarfile
-import zc.buildout.testing
-
 import unittest
-import doctest
-from zope.testing import renormalizing
+from io import BytesIO as _BytesIO
+
+import zc.buildout.testing
 from zc.buildout.tests import normalize_bang
+from zope.testing import renormalizing
 
 
 def _as_bytes(s):
