@@ -2,6 +2,12 @@
  Release History
 =================
 
+4.1 (unreleased)
+================
+
+- Nothing changed yet.
+
+
 4.0 (2023-07-07)
 ================
 
