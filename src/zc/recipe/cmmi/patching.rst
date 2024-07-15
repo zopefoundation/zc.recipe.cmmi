@@ -66,7 +66,6 @@ Now let's create a buildout.cfg file.
     foo: Cache miss; will cache http://localhost//config.patch as /cache/cmmi/...
     foo: Downloading http://localhost//config.patch
     patching file configure
-    ...
     configuring foo patched /sample-buildout/parts/foo
     echo building foo patched
     building foo patched

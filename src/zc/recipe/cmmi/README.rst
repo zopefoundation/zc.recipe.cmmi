@@ -164,7 +164,6 @@ passed, -p0 is appended by default.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     patching file configure
-    ...
     configuring foo patched --prefix=/sample_buildout/parts/foo
     echo building foo patched
     building foo patched
@@ -319,9 +318,8 @@ is logged to stdout, and left intact for debugging purposes.
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
-    patch unexpectedly ends in middle of line
+      I can't seem to find a patch in there anywhere.
     foo: cmmi failed: /.../...buildout-foo
-    patch: **** Only garbage was found in the patch input.
     While:
       Installing foo.
     <BLANKLINE>

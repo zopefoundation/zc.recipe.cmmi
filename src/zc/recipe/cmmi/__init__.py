@@ -106,7 +106,7 @@ class Recipe:
         # ./configure options will get a different build directory.
         # Be sure to sort to keep a consistent order, since dictionary
         # iteration order is never guaranteed.
-        env = ''.join(['{}{}'.format(key, value) for key, value
+        env = ''.join([f'{key}{value}' for key, value
                        in sorted(self.environ.items())])
         state = [self.url, self.extra_options, self.autogen,
                  self.patch, self.patch_options, env]
@@ -223,6 +223,6 @@ class Recipe:
             options = '--prefix="%s"' % dest
         if self.extra_options:
             options += ' %s' % self.extra_options
-        system("{} {}".format(self.configure_cmd, options))
+        system(f"{self.configure_cmd} {options}")
         system("make")
         system("make install")
