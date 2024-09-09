@@ -9,8 +9,6 @@
 
 - Drop support for Python 3.7.
 
-- Fix tests, need to depend on ``setuptools <69``.
-
 4.0 (2023-07-07)
 ================
 
