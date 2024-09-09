@@ -113,6 +113,13 @@ def test_suite():
                 (re.compile(
                     'Exception IOError: IOError.*finalizer of <closed file.*'),
                  ''),
+                # Cope with different versions of the patch command:
+                (re.compile('Hunk #1 succeeded at 1 with fuzz 1.'), ''),
+                (re.compile(
+                    r'patch: \*\*\*\* Only garbage was found in the patch'
+                    r' input.'), ''),
+                (re.compile(
+                    '  I can\'t seem to find a patch in there anywhere.'), ''),
             ]),
             optionflags=(doctest.ELLIPSIS
                          | doctest.NORMALIZE_WHITESPACE)
