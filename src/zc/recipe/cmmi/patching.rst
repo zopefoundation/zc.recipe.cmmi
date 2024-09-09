@@ -55,7 +55,7 @@ Now let's create a buildout.cfg file.
     ... patch = %(server_url)s/config.patch
     ... """ % dict(distros=distros,server_url=server_url,cache=cache))
 
-    >>> print(system('bin/buildout').strip())  # doctest: +REPORT_UDIFF
+    >>> print(system('bin/buildout').strip())
     In...
     Installing foo.
     foo: Searching cache at /cache/cmmi
