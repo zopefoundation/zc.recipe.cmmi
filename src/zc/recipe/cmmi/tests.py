@@ -114,7 +114,8 @@ def test_suite():
                     'Exception IOError: IOError.*finalizer of <closed file.*'),
                  ''),
                 # Cope with different versions of the patch command:
-                (re.compile('Hunk #1 succeeded at 1 with fuzz 1.'), ''),
+                (re.compile(r'Hunk #1 succeeded at 1 with fuzz 1\.'), ''),
+                (re.compile('patch unexpectedly ends in middle of line'), ''),
                 (re.compile(
                     r'patch: \*\*\*\* Only garbage was found in the patch'
                     r' input.'), ''),
