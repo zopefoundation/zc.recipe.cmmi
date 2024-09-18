@@ -29,7 +29,7 @@ It creates a make file which is also run:
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
-    configuring foo --prefix=/sample-buildout/parts/foo
+    configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
     echo installing foo
@@ -65,7 +65,7 @@ You can supply extra configure options:
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
-    configuring foo --prefix=/sample-buildout/parts/foo -a -b c
+    configuring foo /sample-buildout/parts/foo -a -b c
     echo building foo
     building foo
     echo installing foo
@@ -81,7 +81,7 @@ recipes, to the location where the part is installed:
     <BLANKLINE>
     [foo]
 	...
-    location = /sample_buildout/parts/foo
+    location = /sample-buildout/parts/foo
 	...
 
 It may be necessary to set some environment variables when running configure
@@ -106,7 +106,7 @@ or make. This can be done by adding an environment statement:
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     foo: Updating environment: CFLAGS=-I/usr/lib/postgresql7.4/include
-    configuring foo --prefix=/sample_buildout/parts/foo
+    configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
     echo installing foo
@@ -164,8 +164,7 @@ passed, -p0 is appended by default.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     patching file configure
-    ...
-    configuring foo patched --prefix=/sample_buildout/parts/foo
+    configuring foo patched /sample-buildout/parts/foo
     echo building foo patched
     building foo patched
     echo installing foo patched
@@ -190,7 +189,7 @@ It is possible to autogenerate the configure files:
     foo: Downloading http://localhost//bar.tgz
     foo: Unpacking and configuring
     foo: auto generating configure files
-    configuring foo --prefix=/sample_buildout/parts/foo
+    configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
     echo installing foo
@@ -247,7 +246,7 @@ matches, we'll not be bothered with the check by buildout's output:
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
-    configuring foo --prefix=/sample_buildout/parts/foo
+    configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
     echo installing foo
@@ -296,7 +295,7 @@ aborted:
     foo: Unpacking and configuring
     While:
       Installing foo.
-    Error: MD5 checksum mismatch for local resource at '/.../sample-buildout/patches/config.patch'.
+    Error: MD5 checksum mismatch for local resource at '/sample-buildout/patches/config.patch'.
 
     >>> write('buildout.cfg',
     ... """
@@ -319,9 +318,7 @@ is logged to stdout, and left intact for debugging purposes.
     Installing foo.
     foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
-    patch unexpectedly ends in middle of line
     foo: cmmi failed: /.../...buildout-foo
-    patch: **** Only garbage was found in the patch input.
     While:
       Installing foo.
     <BLANKLINE>
@@ -362,7 +359,7 @@ After a successful build, such temporary directories are removed.
     Installing foo.
     foo: Downloading http://localhost:21445/foo.tgz
     foo: Unpacking and configuring
-    configuring foo --prefix=/sample_buildout/parts/foo
+    configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
     echo installing foo

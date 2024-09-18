@@ -21,7 +21,7 @@ import unittest
 from io import BytesIO as _BytesIO
 
 import zc.buildout.testing
-from zc.buildout.tests import normalize_bang
+import zc.buildout.tests
 from zope.testing import renormalizing
 
 
@@ -93,29 +93,42 @@ autogen_template = """#!/bin/sh
 mv configure.in configure
 """
 
+checker = renormalizing.RENormalizing([
+    zc.buildout.testing.normalize_path,
+    zc.buildout.testing.normalize_script,
+    zc.buildout.testing.normalize_egg_py,
+    zc.buildout.tests.normalize_bang,
+    (re.compile('http://localhost:[0-9]{4,5}/'), 'http://localhost/'),
+    (re.compile('occured'), 'occurred'),
+    (re.compile('extdemo[.]pyd'), 'extdemo.so'),
+    (re.compile('[0-9a-f]{40}'), '<BUILDID>'),
+    # Buildout or setuptools has a bug not closing .egg-link files,
+    # leading to issues being reported by PyPy, which naturally
+    # mess up doctests.
+    (re.compile('Exception IOError: IOError.*finalizer of <closed file.*'),
+     ''),
+    # Cope with different versions of the patch command:
+    (re.compile(r'Hunk #1 succeeded at 1 with fuzz 1\.'), ''),
+    (re.compile('patch unexpectedly ends in middle of line'), ''),
+    (re.compile(
+        r'patch: \*\*\*\* Only garbage was found in the patch input.'), ''),
+    (re.compile('  I can\'t seem to find a patch in there anywhere.'), ''),
+])
+
+optionflags = (
+    doctest.ELLIPSIS
+    | doctest.NORMALIZE_WHITESPACE
+    | doctest.REPORT_NDIFF
+)
+
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
             'README.rst',
             setUp=setUp, tearDown=tearDown,
-            checker=renormalizing.RENormalizing([
-                (re.compile(r'--prefix=\S+sample-buildout'),
-                 '--prefix=/sample_buildout'),
-                (re.compile(r' = \S+sample-buildout'),
-                 ' = /sample_buildout'),
-                (re.compile('http://localhost:[0-9]{4,5}/'),
-                 'http://localhost/'),
-                (re.compile('occured'), 'occurred'),
-                # Buildout or setuptools has a bug not closing .egg-link files,
-                # leading to issues being reported by PyPy, which naturally
-                # mess up doctests.
-                (re.compile(
-                    'Exception IOError: IOError.*finalizer of <closed file.*'),
-                 ''),
-            ]),
-            optionflags=(doctest.ELLIPSIS
-                         | doctest.NORMALIZE_WHITESPACE)
+            checker=checker,
+            optionflags=optionflags
         ),
         doctest.DocFileSuite(
             'downloadcache.rst',
@@ -123,36 +136,14 @@ def test_suite():
             'shared.rst',
             setUp=setUp,
             tearDown=tearDown,
-
-            checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_path,
-                zc.buildout.testing.normalize_script,
-                zc.buildout.testing.normalize_egg_py,
-                normalize_bang,
-                (re.compile('http://localhost:[0-9]{4,5}/'),
-                 'http://localhost/'),
-                (re.compile('extdemo[.]pyd'), 'extdemo.so'),
-                (re.compile('[0-9a-f]{40}'), '<BUILDID>'),
-                # Buildout or setuptools has a bug not closing .egg-link files,
-                # leading to issues being reported by PyPy, which naturally
-                # mess up doctests.
-                (re.compile(
-                    'Exception IOError: IOError.*finalizer of <closed file.*'),
-                 ''),
-            ]),
-            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
+            checker=checker,
+            optionflags=optionflags
         ),
         doctest.DocFileSuite(
             'misc.rst',
             setUp=setUp,
             tearDown=tearDown,
-
-            checker=renormalizing.RENormalizing([
-                (re.compile(r'--prefix=\S+sample-buildout'),
-                 '--prefix=/sample_buildout'),
-                (re.compile('http://localhost:[0-9]{4,5}/'),
-                 'http://localhost/'),
-            ]),
-            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
+            checker=checker,
+            optionflags=optionflags
         ),
     ))

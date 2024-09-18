@@ -101,7 +101,7 @@ aren't of the form NAME=.....
     foo: Unpacking and configuring
     foo: Updating environment: CFLAGS=-I/yyy -I/xxx --x=y 2=1+1
     foo: Updating environment: a=b
-    configuring foo --prefix=/sample_buildout/parts/foo
+    configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
     echo installing foo
