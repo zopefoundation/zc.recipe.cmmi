@@ -2,7 +2,7 @@
 # https://github.com/zopefoundation/meta/tree/master/config/buildout-recipe
 [meta]
 template = "buildout-recipe"
-commit-id = "18798421"
+commit-id = "1fe22fd9"
 
 [python]
 with-pypy = true
@@ -14,9 +14,6 @@ with-docs = false
 
 [coverage]
 fail-under = 95
-
-[tox]
-use-flake8 = true
 
 [manifest]
 additional-rules = [
