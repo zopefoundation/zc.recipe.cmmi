@@ -14,7 +14,6 @@
 
 import os
 
-from setuptools import find_packages
 from setuptools import setup
 
 
@@ -71,10 +70,7 @@ setup(
         'as zc.buildout. See downloadcache.txt for details\n'
         + '\n'
     ),
-    package_dir={'': 'src'},
-    packages=find_packages('src'),
     include_package_data=True,
-    namespace_packages=['zc', 'zc.recipe'],
     python_requires='>=3.9',
     install_requires=[
         'zc.buildout >= 2.9.4',
@@ -87,7 +83,7 @@ setup(
             # own tests to run.
             'manuel',
             'zope.testing',
-            'zope.testrunner',
+            'zope.testrunner >= 6.4',
         ],
     },
     entry_points={
