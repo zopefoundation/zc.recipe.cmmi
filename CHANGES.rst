@@ -2,8 +2,10 @@
  Release History
 =================
 
-4.1 (unreleased)
+5.0 (unreleased)
 ================
+
+- Replace ``pkg_resources`` namespace with PEP 420 native namespace.
 
 - Add support for Python 3.13.
 
