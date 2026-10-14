@@ -20,3 +20,6 @@ fail-under = 95
 additional-rules = [
     "recursive-include src *.rst",
     ]
+
+[pypi]
+trusted-publishing = true

@@ -7,7 +7,6 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-
 [project]
 name = "zc.recipe.cmmi"
 version = "5.1.dev0"
@@ -95,3 +94,8 @@ source = [
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.rst", "CHANGES.rst"]}
+
+[tool.zest-releaser]
+create-wheel = false
+extra-message = ""
+upload-pypi = false
