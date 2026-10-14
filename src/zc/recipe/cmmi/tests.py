@@ -113,6 +113,11 @@ checker = renormalizing.RENormalizing([
     (re.compile(
         r'patch: \*\*\*\* Only garbage was found in the patch input.'), ''),
     (re.compile('  I can\'t seem to find a patch in there anywhere.'), ''),
+    # zc.buildout >= 6 emits a warning when importing its vendored
+    # pkg_resources:
+    (re.compile(
+        r'.*UserWarning: pkg_resources is deprecated as an API.*\n'
+        r'.*from zc.buildout._vendor import pkg_resources.*\n'), ''),
 ])
 
 optionflags = (

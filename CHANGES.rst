@@ -5,7 +5,7 @@
 5.1 (unreleased)
 ================
 
-- Nothing changed yet.
+- Fix tests to run with ``zc.buildout >= 6.0``.
 
 
 5.0 (2025-09-18)
