@@ -5,11 +5,11 @@
 5.1 (unreleased)
 ================
 
-- Move package metadata from setup.py to pyproject.toml.
-
 - Add support for Python 3.14, 3.15.
 
 - Drop support for Python 3.10, 3.9.
+
+- Move package metadata from setup.py to pyproject.toml.
 
 - Fix tests to run with ``zc.buildout >= 6.0``.
 
