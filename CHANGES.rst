@@ -2,7 +2,7 @@
  Release History
 =================
 
-5.1 (unreleased)
+5.1 (2026-10-14)
 ================
 
 - Add support for Python 3.14, 3.15.
