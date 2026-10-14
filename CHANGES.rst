@@ -5,6 +5,8 @@
 5.1 (unreleased)
 ================
 
+- Drop support for Python 3.10, 3.9.
+
 - Fix tests to run with ``zc.buildout >= 6.0``.
 
 
