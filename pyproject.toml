@@ -1,11 +1,65 @@
-# Generated from:
-# https://github.com/zopefoundation/meta/tree/master/config/buildout-recipe
+# Generated with zope.meta (https://zopemeta.readthedocs.io/) from:
+# https://github.com/zopefoundation/meta/tree/master/src/zope/meta/buildout-recipe
 [build-system]
 requires = [
-    "setuptools == 78.1.1",
+    "setuptools >= 78.1.1,< 82",
     "wheel",
 ]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "zc.recipe.cmmi"
+version = "5.1.dev0"
+description = "ZC Buildout recipe for configure/make/make install"
+license = "ZPL-2.1"
+classifiers = [
+    "Environment :: Plugins",
+    "Framework :: Buildout",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: System :: Software Distribution",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+]
+dynamic = ["readme"]
+requires-python = ">=3.11"
+authors = [
+    {name = "Jim Fulton",email = "jim@zope.com"},
+]
+maintainers = [
+    {name = "Plone Foundation and contributors",email = "zope-dev@zope.dev"},
+]
+dependencies = [
+    "zc.buildout >= 2.9.4",
+]
+keywords = [
+    "zc.buildout",
+    "buildout",
+    "recipe",
+    "cmmi",
+    "configure",
+    "make",
+    "install",
+]
+
+[project.entry-points."zc.buildout"]
+default = "zc.recipe.cmmi:Recipe"
+
+[project.optional-dependencies]
+test = [
+    "manuel",
+    "zope.testing",
+    "zope.testrunner >= 6.4",
+]
 
 [tool.coverage.run]
 branch = true
@@ -37,3 +91,11 @@ source = [
     ".tox/*/lib/python*/site-packages/",
     ".tox/pypy*/site-packages/",
 ]
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.rst", "CHANGES.rst"]}
+
+[tool.zest-releaser]
+create-wheel = false
+extra-message = ""
+upload-pypi = false
