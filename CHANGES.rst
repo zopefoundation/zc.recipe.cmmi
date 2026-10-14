@@ -2,6 +2,12 @@
  Release History
 =================
 
+5.2 (unreleased)
+================
+
+- Nothing changed yet.
+
+
 5.1 (2026-10-14)
 ================
 
