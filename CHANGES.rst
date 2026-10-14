@@ -2,7 +2,7 @@
  Release History
 =================
 
-5.1 (unreleased)
+5.1 (2026-10-14)
 ================
 
 - Move package metadata from setup.py to pyproject.toml.
